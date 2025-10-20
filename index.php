@@ -30,28 +30,13 @@
   <script>tailwind.config = { theme: { extend: {
     colors: {
       brand: {
-        50:'#fef2f2',  // Rojo muy claro para fondos alternos (cálido)
-        100:'#fee2e2',
-        200:'#fecaca',
-        300:'#fca5a5',
-        400:'#f87171',
-        500:'#ef4444',  // Rojo del logo para primary
-        600:'#dc2626',
-        700:'#b91c1c',
-        800:'#991b1b',
-        900:'#7f1d1d'
+        50:'#e6f0f2',100:'#cfe2e6',200:'#9fc4cd',300:'#6ea6b3',400:'#3e889a',500:'#0f6a81',600:'#0d5a6d',700:'#0b4a59',800:'#083945',900:'#062f3a'
       },
-      neutral: {  // Nueva paleta para fondos/textos
-        50: '#fafafa',   // Off-white cálido
-        100: '#f5f5f5',
-        200: '#e5e5e5',
-        300: '#d4d4d4',
-        400: '#a3a3a3',
-        500: '#737373',
-        600: '#525252',
-        700: '#404040',
-        800: '#262626',
-        900: '#171717'
+      accent: {  // Rojo del logo para highlights/botones
+        50:'#fef2f2',100:'#fee2e2',200:'#fecaca',300:'#fca5a5',400:'#f87171',500:'#ef4444',600:'#dc2626',700:'#b91c1c',800:'#991b1b',900:'#7f1d1d'
+      },
+      neutral: {  // Neutros para fondos/textos
+        50: '#f8fafc',100: '#f1f5f9',200: '#e2e8f0',300: '#cbd5e1',400: '#94a3b8',500: '#64748b',600: '#475569',700: '#334155',800: '#1e293b',900: '#0f172a'
       }
     },
     fontFamily:{ sans:['Inter', 'system-ui', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'] }
@@ -63,9 +48,9 @@
   <link rel="stylesheet" href="./css/styles.css" />
 
 </head>
-<body class="font-sans text-slate-800">
+<body class="font-sans text-neutral-800">
   <!-- Barra superior -->
-  <div class="bg-neutral-900 text-white text-sm">
+  <div class="bg-brand-900 text-white text-sm">
     <div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between">
       <p>Atendemos AMBA · Lun–Vie 9–18 h</p>
       <a href="https://wa.me/5491123941812" class="underline hover:no-underline">WhatsApp: +54 9 11 2394-1812</a>
@@ -80,16 +65,16 @@
         <span class="sr-only">Del Sur Construcciones</span>
       </a>
       <nav class="hidden md:flex gap-6 text-neutral-700 nav-drop">
-        <a class="hover:text-brand-500 focus-ring" href="#servicios">Servicios</a>
-        <a class="hover:text-brand-500 focus-ring" href="#proyectos">Proyectos</a>
-        <a class="hover:text-brand-500 focus-ring" href="#proceso">Proceso</a>
-        <a class="hover:text-brand-500 focus-ring" href="#faq">Preguntas</a>
+        <a class="hover:text-brand-700 focus-ring" href="#servicios">Servicios</a>
+        <a class="hover:text-brand-700 focus-ring" href="#proyectos">Proyectos</a>
+        <a class="hover:text-brand-700 focus-ring" href="#proceso">Proceso</a>
+        <a class="hover:text-brand-700 focus-ring" href="#faq">Preguntas</a>
         <!-- Enlaces a secciones adicionales -->
-        <a class="hover:text-brand-500 focus-ring" href="pages/planificador.php">Planificador</a>
-        <a class="hover:text-brand-500 focus-ring" href="pages/pagos.php">Pagos</a>
-        <a class="hover:text-brand-500 focus-ring" href="#contacto">Contacto</a>
+        <a class="hover:text-brand-700 focus-ring" href="pages/planificador.php">Planificador</a>
+        <a class="hover:text-brand-700 focus-ring" href="pages/pagos.php">Pagos</a>
+        <a class="hover:text-brand-700 focus-ring" href="#contacto">Contacto</a>
       </nav>
-      <a href="#contacto" class="ml-4 inline-flex items-center rounded-xl bg-brand-500 px-4 py-2 text-white hover:bg-brand-400 focus-ring btn-anim nav-drop">Solicitar presupuesto</a>
+      <a href="#contacto" class="ml-4 inline-flex items-center rounded-xl bg-brand-700 px-4 py-2 text-white hover:bg-brand-600 focus-ring btn-anim nav-drop">Solicitar presupuesto</a>
     </div>
   </header>
 
@@ -100,8 +85,8 @@
     </video>
     <!-- Blueprint overlay with subtle architectural lines -->
     <div class="absolute inset-0 arch-overlay"></div>
-    <!-- Dark overlay for contrast -->
-    <div class="absolute inset-0 -z-10 bg-neutral-900/60"></div>
+    <!-- Dark overlay for contrast (más oscuro: brand-900/70) -->
+    <div class="absolute inset-0 -z-10 bg-brand-900/70"></div>
     <div class="max-w-7xl mx-auto px-3 py-24 md:py-36 text-white">
       <h1 class="text-4xl md:text-6xl font-bold leading-tight">Obras llave en mano, refacciones y diseño</h1>
       <p class="mt-4 max-w-2xl text-lg md:text-xl text-neutral-100">Viviendas, locales y espacios comerciales. Dirección técnica, ejecución y entrega en tiempo y forma.</p>
@@ -113,7 +98,7 @@
   </section>
 
   <!-- Servicios -->
-  <section id="servicios" class="py-16 bg-neutral-50">
+  <section id="servicios" class="py-16 bg-brand-50">
     <div class="max-w-7xl mx-auto px-3">
       <h2 class="text-3xl font-semibold">Servicios</h2>
       <p class="text-neutral-600 mt-2">Acompañamos todo el ciclo: anteproyecto, obra y posventa.</p>
@@ -154,7 +139,7 @@
           <div class="p-6">
             <h3 class="text-xl font-medium mb-2">Casa en Palermo</h3>
             <p class="text-neutral-600 mb-4">Ampliación llave en mano de 120m², con diseño interior integrado. Entrega en 4 meses.</p>
-            <a href="#" class="inline-flex items-center text-brand-500 hover:text-brand-400 font-medium">Ver detalles →</a>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-500 font-medium">Ver detalles →</a>
           </div>
         </div>
         <!-- Proyecto 2 -->
@@ -163,7 +148,7 @@
           <div class="p-6">
             <h3 class="text-xl font-medium mb-2">Local en Recoleta</h3>
             <p class="text-neutral-600 mb-4">Adecuación comercial de 80m², instalaciones eléctricas y plomería. Listo en 6 semanas.</p>
-            <a href="#" class="inline-flex items-center text-brand-500 hover:text-brand-400 font-medium">Ver detalles →</a>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-500 font-medium">Ver detalles →</a>
           </div>
         </div>
         <!-- Proyecto 3 -->
@@ -172,7 +157,7 @@
           <div class="p-6">
             <h3 class="text-xl font-medium mb-2">Oficina en Belgrano</h3>
             <p class="text-neutral-600 mb-4">Reforma integral de 200m², con foco en sostenibilidad y eficiencia energética.</p>
-            <a href="#" class="inline-flex items-center text-brand-500 hover:text-brand-400 font-medium">Ver detalles →</a>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-500 font-medium">Ver detalles →</a>
           </div>
         </div>
         <!-- Proyecto 4 -->
@@ -181,43 +166,43 @@
           <div class="p-6">
             <h3 class="text-xl font-medium mb-2">Vivienda en Caballito</h3>
             <p class="text-neutral-600 mb-4">Construcción nueva de 150m², jardín integrado y materiales ecológicos.</p>
-            <a href="#" class="inline-flex items-center text-brand-500 hover:text-brand-400 font-medium">Ver detalles →</a>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-500 font-medium">Ver detalles →</a>
           </div>
         </div>
       </div>
       <div class="mt-8 text-center">
-        <a href="https://wa.me/5491123941812" class="inline-flex items-center rounded-xl bg-brand-500 px-6 py-3 text-white hover:bg-brand-400 focus-ring btn-anim">Ver todos los proyectos</a>
+        <a href="https://wa.me/5491123941812" class="inline-flex items-center rounded-xl bg-brand-700 px-6 py-3 text-white hover:bg-brand-600 focus-ring btn-anim">Ver todos los proyectos</a>
       </div>
     </div>
   </section>
 
   <!-- Proceso -->
-  <section id="proceso" class="py-16 bg-neutral-50">
+  <section id="proceso" class="py-16 bg-brand-50">
     <div class="max-w-7xl mx-auto px-3">
       <h2 class="text-3xl font-semibold mb-4">Nuestro proceso</h2>
       <p class="text-neutral-600 mb-8">De la idea al llave en mano: un flujo claro y transparente para tu tranquilidad.</p>
       <div class="grid md:grid-cols-4 gap-6">
         <!-- Step 1 -->
         <div class="text-center">
-          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">1</div>
+          <div class="mx-auto w-16 h-16 rounded-full bg-accent-500 text-white flex items-center justify-center text-2xl font-bold mb-4">1</div>
           <h3 class="text-xl font-medium mb-2">Anteproyecto</h3>
           <p class="text-neutral-600">Escuchamos tu visión, levantamos planos iniciales y definimos el scope. Gratuito y sin compromiso.</p>
         </div>
         <!-- Step 2 -->
         <div class="text-center">
-          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">2</div>
+          <div class="mx-auto w-16 h-16 rounded-full bg-accent-500 text-white flex items-center justify-center text-2xl font-bold mb-4">2</div>
           <h3 class="text-xl font-medium mb-2">Presupuesto</h3>
           <p class="text-neutral-600">Cotización detallada con materiales, plazos y costos. Ajustes hasta que quede perfecto.</p>
         </div>
         <!-- Step 3 -->
         <div class="text-center">
-          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">3</div>
+          <div class="mx-auto w-16 h-16 rounded-full bg-accent-500 text-white flex items-center justify-center text-2xl font-bold mb-4">3</div>
           <h3 class="text-xl font-medium mb-2">Ejecución</h3>
           <p class="text-neutral-600">Dirección técnica diaria, equipo calificado y avances semanales. Sin sorpresas.</p>
         </div>
         <!-- Step 4 -->
         <div class="text-center">
-          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">4</div>
+          <div class="mx-auto w-16 h-16 rounded-full bg-accent-500 text-white flex items-center justify-center text-2xl font-bold mb-4">4</div>
           <h3 class="text-xl font-medium mb-2">Entrega</h3>
           <p class="text-neutral-600">Inspección final, documentación y garantía. Tu obra lista para disfrutar.</p>
         </div>
@@ -245,7 +230,7 @@
   </section>
 
   <!-- Contacto -->
-  <section id="contacto" class="py-16 bg-neutral-50">
+  <section id="contacto" class="py-16 bg-brand-50">
     <div class="max-w-7xl mx-auto px-3">
       <div class="grid md:grid-cols-2 gap-8">
         <div>
@@ -255,7 +240,7 @@
           <p><strong>Email:</strong> lauti.seid@gmail.com</p>
           <p><strong>Dirección:</strong> Calle Falsa 123, Buenos Aires</p>
           <div class="mt-4">
-            <a href="https://wa.me/5491123941812" class="inline-flex items-center rounded-xl bg-brand-500 px-5 py-3 text-white hover:bg-brand-400 focus-ring btn-anim">Hablar por WhatsApp</a>
+            <a href="https://wa.me/5491123941812" class="inline-flex items-center rounded-xl bg-brand-600 px-5 py-3 text-white hover:bg-brand-500 focus-ring btn-anim">Hablar por WhatsApp</a>
           </div>
         </div>
         <form id="contactForm" class="space-y-4">
@@ -275,7 +260,7 @@
             <label class="block text-sm font-medium text-neutral-700" for="mensaje">Mensaje</label>
             <textarea id="mensaje" name="mensaje" rows="4" required class="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
-          <button type="submit" class="rounded-xl bg-brand-500 px-5 py-3 text-white hover:bg-brand-400 focus-ring btn-anim">Enviar</button>
+          <button type="submit" class="rounded-xl bg-brand-700 px-5 py-3 text-white hover:bg-brand-600 focus-ring btn-anim">Enviar</button>
           <p id="formMessage" class="text-sm mt-2"></p>
         </form>
       </div>
