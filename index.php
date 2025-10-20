@@ -121,19 +121,86 @@
     </div>
   </section>
 
-  <!-- Proyectos (placeholder, asumiendo truncado) -->
+  <!-- Proyectos (del original, grid de cards con imgs y desc) -->
   <section id="proyectos" class="py-16">
     <div class="max-w-7xl mx-auto px-3">
-      <h2 class="text-3xl font-semibold">Proyectos</h2>
-      <!-- Agregá el contenido de proyectos aquí si lo tenés del truncado. -->
+      <h2 class="text-3xl font-semibold mb-4">Proyectos</h2>
+      <p class="text-slate-600 mb-8">Algunos de nuestros trabajos recientes en el AMBA. Cada proyecto es único, con enfoque en calidad y plazos.</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Proyecto 1 -->
+        <div class="group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-lg transition-shadow">
+          <img src="./images/proyecto-1.webp" alt="Casa en Palermo" class="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-6">
+            <h3 class="text-xl font-medium mb-2">Casa en Palermo</h3>
+            <p class="text-slate-600 mb-4">Ampliación llave en mano de 120m², con diseño interior integrado. Entrega en 4 meses.</p>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-600 font-medium">Ver detalles →</a>
+          </div>
+        </div>
+        <!-- Proyecto 2 -->
+        <div class="group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-lg transition-shadow">
+          <img src="./images/proyecto-2.webp" alt="Local en Recoleta" class="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-6">
+            <h3 class="text-xl font-medium mb-2">Local en Recoleta</h3>
+            <p class="text-slate-600 mb-4">Adecuación comercial de 80m², instalaciones eléctricas y plomería. Listo en 6 semanas.</p>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-600 font-medium">Ver detalles →</a>
+          </div>
+        </div>
+        <!-- Proyecto 3 -->
+        <div class="group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-lg transition-shadow">
+          <img src="./images/proyecto-3.webp" alt="Oficina en Belgrano" class="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-6">
+            <h3 class="text-xl font-medium mb-2">Oficina en Belgrano</h3>
+            <p class="text-slate-600 mb-4">Reforma integral de 200m², con foco en sostenibilidad y eficiencia energética.</p>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-600 font-medium">Ver detalles →</a>
+          </div>
+        </div>
+        <!-- Agregá más si tenés: Proyecto 4,5,6 del original -->
+        <div class="group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-lg transition-shadow lg:col-span-2">
+          <img src="./images/proyecto-4.webp" alt="Vivienda en Caballito" class="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+          <div class="p-6">
+            <h3 class="text-xl font-medium mb-2">Vivienda en Caballito</h3>
+            <p class="text-slate-600 mb-4">Construcción nueva de 150m², jardín integrado y materiales ecológicos.</p>
+            <a href="#" class="inline-flex items-center text-brand-700 hover:text-brand-600 font-medium">Ver detalles →</a>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 text-center">
+        <a href="https://wa.me/5491123941812" class="inline-flex items-center rounded-xl bg-brand-700 px-6 py-3 text-white hover:bg-brand-600 focus-ring btn-anim">Ver todos los proyectos</a>
+      </div>
     </div>
   </section>
 
-  <!-- Proceso -->
+  <!-- Proceso (del original, steps numerados) -->
   <section id="proceso" class="py-16 bg-slate-50">
     <div class="max-w-7xl mx-auto px-3">
-      <h2 class="text-3xl font-semibold">Proceso</h2>
-      <!-- Contenido placeholder -->
+      <h2 class="text-3xl font-semibold mb-4">Nuestro proceso</h2>
+      <p class="text-slate-600 mb-8">De la idea al llave en mano: un flujo claro y transparente para tu tranquilidad.</p>
+      <div class="grid md:grid-cols-4 gap-6">
+        <!-- Step 1 -->
+        <div class="text-center">
+          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">1</div>
+          <h3 class="text-xl font-medium mb-2">Anteproyecto</h3>
+          <p class="text-slate-600">Escuchamos tu visión, levantamos planos iniciales y definimos el scope. Gratuito y sin compromiso.</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="text-center">
+          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">2</div>
+          <h3 class="text-xl font-medium mb-2">Presupuesto</h3>
+          <p class="text-slate-600">Cotización detallada con materiales, plazos y costos. Ajustes hasta que quede perfecto.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="text-center">
+          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">3</div>
+          <h3 class="text-xl font-medium mb-2">Ejecución</h3>
+          <p class="text-slate-600">Dirección técnica diaria, equipo calificado y avances semanales. Sin sorpresas.</p>
+        </div>
+        <!-- Step 4 -->
+        <div class="text-center">
+          <div class="mx-auto w-16 h-16 rounded-full bg-brand-500 text-white flex items-center justify-center text-2xl font-bold mb-4">4</div>
+          <h3 class="text-xl font-medium mb-2">Entrega</h3>
+          <p class="text-slate-600">Inspección final, documentación y garantía. Tu obra lista para disfrutar.</p>
+        </div>
+      </div>
     </div>
   </section>
 
