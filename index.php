@@ -47,8 +47,85 @@
   <!-- External stylesheet for custom styles -->
   <link rel="stylesheet" href="./css/styles.css" />
 
+  <style>
+    /* Welcome Splash styles */
+    #welcome-splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--brand-50) 0%, var(--neutral-50) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+      text-align: center;
+      padding: 2rem;
+    }
+    #welcome-splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .splash-logo {
+      width: 140px;
+      height: 140px;
+      margin-bottom: 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    .splash-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--brand-700);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out 0.5s both;
+    }
+    .splash-story {
+      font-size: 1.1rem;
+      color: var(--neutral-600);
+      max-width: 400px;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease-out 1s both;
+    }
+    .skip-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--accent-500);
+      color: var(--accent-500);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .skip-btn:hover {
+      background: var(--accent-500);
+      color: white;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
 </head>
 <body class="font-sans text-neutral-800">
+  <!-- Welcome Splash -->
+  <div id="welcome-splash">
+    <button class="skip-btn" onclick="skipWelcome()">Saltar</button>
+    <img src="./images/logo.webp" alt="Del Sur Construcciones" class="splash-logo" />
+    <h1 class="splash-title">Del Sur Construcciones</h1>
+    <p class="splash-story">Desde el primer boceto hasta la llave en mano, construimos espacios que duran. Tu visión, nuestra precisión. Bienvenido a un mundo de obras impecables.</p>
+  </div>
+
   <!-- Barra superior -->
   <div class="bg-brand-900 text-white text-sm">
     <div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between">
@@ -301,5 +378,16 @@
 
   <!-- External JS -->
   <script src="./scripts/scripts.js"></script>
+
+  <script>
+    function skipWelcome() {
+      document.getElementById('welcome-splash').classList.add('hidden');
+    }
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        skipWelcome();
+      }, 3000); // 3s for storytelling
+    });
+  </script>
 </body>
 </html>
