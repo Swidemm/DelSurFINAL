@@ -73,21 +73,24 @@
       width: 140px;
       height: 140px;
       margin-bottom: 2rem;
-      animation: float 3s ease-in-out infinite;
+      animation: fadeIn 1s ease-out;
+    }
+    .splash-drawing {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 2rem;
+    }
+    .splash-drawing path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawLines 5s linear forwards;
     }
     .splash-title {
       font-size: 2rem;
       font-weight: 700;
       color: var(--brand-700);
       margin-bottom: 1rem;
-      animation: fadeInUp 0.8s ease-out 0.5s both;
-    }
-    .splash-story {
-      font-size: 1.1rem;
-      color: var(--neutral-600);
-      max-width: 400px;
-      line-height: 1.6;
-      animation: fadeInUp 0.8s ease-out 1s both;
+      animation: fadeInUp 0.8s ease-out 4.5s both;  /* Aparece al final de la anim */
     }
     .skip-btn {
       position: absolute;
@@ -106,9 +109,12 @@
       background: var(--accent-500);
       color: white;
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+    @keyframes drawLines {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -121,9 +127,14 @@
   <!-- Welcome Splash -->
   <div id="welcome-splash">
     <button class="skip-btn" onclick="skipWelcome()">Saltar</button>
-    <img src="./images/logo.webp" alt="Del Sur Construcciones" class="splash-logo" />
+    <svg class="splash-drawing" viewBox="0 0 200 200" fill="none" stroke="var(--brand-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Simple house blueprint animation: lines drawing -->
+      <path d="M50 150 L50 50 L150 50 L150 150 L50 150" />  <!-- Walls -->
+      <path d="M50 50 L100 10 L150 50" />  <!-- Roof -->
+      <path d="M100 150 L100 50" />  <!-- Door line -->
+      <path d="M75 100 L75 130 L125 130 L125 100" />  <!-- Window -->
+    </svg>
     <h1 class="splash-title">Del Sur Construcciones</h1>
-    <p class="splash-story">Desde el primer boceto hasta la llave en mano, construimos espacios que duran. Tu visión, nuestra precisión. Bienvenido a un mundo de obras impecables.</p>
   </div>
 
   <!-- Barra superior -->
@@ -383,11 +394,8 @@
     function skipWelcome() {
       document.getElementById('welcome-splash').classList.add('hidden');
     }
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        skipWelcome();
-      }, 3000); // 3s for storytelling
-    });
+    // Auto-hide after 5s
+    setTimeout(skipWelcome, 5000);
   </script>
 </body>
 </html>
