@@ -12,7 +12,7 @@
   <meta property="og:title" content="Medios de pago — Del Sur Construcciones" />
   <meta property="og:description" content="Elegí el medio de pago que mejor se adapte a tus necesidades: transferencia, tarjetas, Mercado Pago y más." />
   <meta property="og:image" content="./imagenes/og-cover.webp" />
-  <meta property="og:url" content="https://delsurconstrucciones.example/pagos.html" />
+  <meta property="og:url" content="https://delsurconstrucciones.example/pagos.php" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -53,21 +53,21 @@
   <!-- Header sticky -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-3 py-3 flex items-center gap-4">
-      <a href="index.html#inicio" class="flex items-center gap-3 mr-auto">
+      <a href="index.php" class="flex items-center gap-3 mr-auto">
         <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-14 w-auto logo-slide" />
         <span class="sr-only">Del Sur Construcciones</span>
       </a>
       <nav class="hidden md:flex gap-6 text-slate-700 nav-drop">
-        <a class="hover:text-brand-700 focus-ring" href="index.html#servicios">Servicios</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.html#proyectos">Proyectos</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.html#proceso">Proceso</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.html#faq">Preguntas</a>
-        <a class="hover:text-brand-700 focus-ring" href="planificador.html">Planificador</a>
+        <a class="hover:text-brand-700 focus-ring" href="index.php#servicios">Servicios</a>
+        <a class="hover:text-brand-700 focus-ring" href="index.php#proyectos">Proyectos</a>
+        <a class="hover:text-brand-700 focus-ring" href="index.php#proceso">Proceso</a>
+        <a class="hover:text-brand-700 focus-ring" href="index.php#faq">Preguntas</a>
+        <a class="hover:text-brand-700 focus-ring" href="planificador.pphp">Planificador</a>
         <!-- enlace activo para pagos -->
-        <a class="text-brand-700 font-semibold focus-ring" href="pagos.html">Pagos</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.html#contacto">Contacto</a>
+        <a class="text-brand-700 font-semibold focus-ring" href="pagos.php">Pagos</a>
+        <a class="hover:text-brand-700 focus-ring" href="index.php#contacto">Contacto</a>
       </nav>
-      <a href="index.html#contacto" class="ml-4 inline-flex items-center rounded-xl bg-brand-700 px-4 py-2 text-white hover:bg-brand-600 focus-ring btn-anim nav-drop">Solicitar presupuesto</a>
+      <a href="index.php#contacto" class="ml-4 inline-flex items-center rounded-xl bg-brand-700 px-4 py-2 text-white hover:bg-brand-600 focus-ring btn-anim nav-drop">Solicitar presupuesto</a>
     </div>
   </header>
 
@@ -113,13 +113,13 @@
       <div>
         <h3 class="font-semibold text-white mb-2">Secciones</h3>
         <ul class="space-y-1">
-          <li><a href="index.html#servicios" class="hover:text-white">Servicios</a></li>
-          <li><a href="index.html#proyectos" class="hover:text-white">Proyectos</a></li>
-          <li><a href="index.html#proceso" class="hover:text-white">Proceso</a></li>
-          <li><a href="index.html#faq" class="hover:text-white">Preguntas</a></li>
-          <li><a href="planificador.html" class="hover:text-white">Planificador</a></li>
-          <li><a href="pagos.html" class="hover:text-white">Pagos</a></li>
-          <li><a href="index.html#contacto" class="hover:text-white">Contacto</a></li>
+          <li><a href="index.php#servicios" class="hover:text-white">Servicios</a></li>
+          <li><a href="index.php#proyectos" class="hover:text-white">Proyectos</a></li>
+          <li><a href="index.php#proceso" class="hover:text-white">Proceso</a></li>
+          <li><a href="index.php#faq" class="hover:text-white">Preguntas</a></li>
+          <li><a href="planificador.php" class="hover:text-white">Planificador</a></li>
+          <li><a href="pagos.php" class="hover:text-white">Pagos</a></li>
+          <li><a href="index.php#contacto" class="hover:text-white">Contacto</a></li>
         </ul>
       </div>
       <div>
