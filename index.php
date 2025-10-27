@@ -79,8 +79,8 @@
     </video>
     <!-- Blueprint overlay with subtle architectural lines -->
     <div class="absolute inset-0 arch-overlay"></div>
-    <!-- Dark overlay for contrast -->
-    <div class="absolute inset-0 -z-10 bg-slate-900/60"></div>
+    <!-- Overlay para contraste en tonos azul navy claro -->
+    <div class="absolute inset-0 -z-10 bg-[#0f4065]/60"></div>
     <div class="max-w-7xl mx-auto px-3 py-24 md:py-36 text-white">
       <h1 class="text-4xl md:text-6xl font-bold leading-tight">Obras llave en mano, refacciones y diseño</h1>
       <p class="mt-4 max-w-2xl text-lg md:text-xl text-slate-100">Viviendas, locales y espacios comerciales. Dirección técnica, ejecución y entrega en tiempo y forma.</p>
@@ -126,30 +126,30 @@
   </section>
 
   <!-- Proyectos -->
-  <section id="proyectos" class="py-16">
+  <section id="proyectos" class="py-16 bg-[#0f4065] text-white">
     <div class="max-w-7xl mx-auto px-3">
       <h2 class="text-3xl font-semibold">Proyectos recientes</h2>
-      <p class="text-slate-600 mt-2">Algunas obras que reflejan la calidad y compromiso de nuestro equipo.</p>
+      <p class="text-slate-200 mt-2">Algunas obras que reflejan la calidad y compromiso de nuestro equipo.</p>
       <div class="mt-8 grid md:grid-cols-3 gap-6">
         <div class="rounded-2xl overflow-hidden shadow-sm bg-white">
           <img src="./imagenes/proyectos/proyecto-1.webp" alt="Proyecto 1" class="w-full h-48 object-cover" />
           <div class="p-4">
             <h3 class="text-lg font-medium">Vivienda familiar</h3>
-            <p class="text-slate-600 text-sm mt-1">Proyecto llave en mano de 200 m² con diseño contemporáneo.</p>
+            <p class="text-slate-200 text-sm mt-1">Proyecto llave en mano de 200 m² con diseño contemporáneo.</p>
           </div>
         </div>
         <div class="rounded-2xl overflow-hidden shadow-sm bg-white">
           <img src="./imagenes/proyectos/proyecto-2.webp" alt="Proyecto 2" class="w-full h-48 object-cover" />
           <div class="p-4">
             <h3 class="text-lg font-medium">Oficinas corporativas</h3>
-            <p class="text-slate-600 text-sm mt-1">Adecuación comercial con instalaciones de alta tecnología.</p>
+            <p class="text-slate-200 text-sm mt-1">Adecuación comercial con instalaciones de alta tecnología.</p>
           </div>
         </div>
         <div class="rounded-2xl overflow-hidden shadow-sm bg-white">
           <img src="./imagenes/proyectos/proyecto-3.webp" alt="Proyecto 3" class="w-full h-48 object-cover" />
           <div class="p-4">
             <h3 class="text-lg font-medium">Refacción integral</h3>
-            <p class="text-slate-600 text-sm mt-1">Ampliación y modernización de vivienda en el barrio norte.</p>
+            <p class="text-slate-200 text-sm mt-1">Ampliación y modernización de vivienda en el barrio norte.</p>
           </div>
         </div>
       </div>

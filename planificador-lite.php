@@ -541,6 +541,22 @@ function updateCursor(){ plan.style.cursor = state.tool==='pan' ? 'grab' : 'defa
 
 plan.addEventListener('mousedown', (e)=>{
   const rect=plan.getBoundingClientRect(); const p={x:e.clientX-rect.left, y:e.clientY-rect.top}; const w=screenToWorld(p);
+  // Si la herramienta activa es "wall" (pared) manejamos un trazado simple: el primer clic define el punto A y el segundo clic define el punto B.
+  if(state.tool==='wall'){
+    // Si no hay un inicio de pared guardado, almacenamos el punto de inicio y salimos.
+    if(!state.drawing){
+      state.drawing = {a:{x:w.x,y:w.y}};
+    }else{
+      // Ya existe un punto de inicio, así que creamos la pared con el punto actual como final.
+      const wall = {id: uid(), a: state.drawing.a, b: {x:w.x, y:w.y}, thick: state.wallThick, height: state.wallHeight};
+      state.walls.push(wall);
+      state.drawing = null;
+      pushHist();
+      draw();
+      renderMiniHUD();
+    }
+    return;
+  }
   if(state.tool==='pan'){ isPanning=true; plan.style.cursor='grabbing'; window.__panStart={x:e.clientX,y:e.clientY, panX:state.pan.x, panY:state.pan.y}; return; }
   const hit=hitTest(p);
   if(hit){
@@ -577,6 +593,11 @@ plan.addEventListener('wheel', (e)=>{
 // --------- Controles básicos ---------
 $('#tool-select').onclick=()=>{state.tool='select'; updateCursor();};
 $('#tool-pan').onclick=()=>{state.tool='pan'; updateCursor();};
+// Asignamos las herramientas para dibujo de elementos arquitectónicos (pared, habitación, puerta y ventana).
+$('#tool-wall').onclick=()=>{ state.tool='wall'; updateCursor(); };
+$('#tool-room').onclick=()=>{ state.tool='room'; updateCursor(); };
+$('#tool-door').onclick=()=>{ state.tool='door'; updateCursor(); };
+$('#tool-window').onclick=()=>{ state.tool='window'; updateCursor(); };
 $('#gridToggle').onchange=(e)=>{state.showGrid=e.target.checked; draw(); renderMiniHUD();};
 $('#scaleInput').onchange=(e)=>{state.scale=parseFloat(e.target.value)||40; draw(); renderMiniHUD();};
 $('#wallH').onchange=(e)=>{state.wallHeight=parseFloat(e.target.value)||2.7;};
