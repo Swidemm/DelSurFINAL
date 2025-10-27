@@ -1,0 +1,7 @@
+# Enable rewriting
+RewriteEngine On
+# Redirect /api/contact (no trailing slash) to contact.php
+RewriteRule ^api/contact$ /api/contact.php [L,QSA]
+# Ensure JSON file served with correct type
+AddType application/json .json
+AddDefaultCharset utf-8
