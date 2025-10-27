@@ -55,7 +55,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--brand-50) 0%, var(--neutral-50) 100%);
+      background: var(--brand-50); /* Fondo sólido para ocultar completamente la página */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -84,6 +84,9 @@
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
       animation: drawLines 5s linear forwards;
+      -webkit-animation: drawLines 5s linear forwards; /* Vendor prefixes */
+      -moz-animation: drawLines 5s linear forwards;
+      -o-animation: drawLines 5s linear forwards;
     }
     .splash-title {
       font-size: 2rem;
@@ -120,6 +123,16 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* Vendor prefixes for keyframes */
+    @-webkit-keyframes drawLines { to { stroke-dashoffset: 0; } }
+    @-moz-keyframes drawLines { to { stroke-dashoffset: 0; } }
+    @-o-keyframes drawLines { to { stroke-dashoffset: 0; } }
+    @-webkit-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @-moz-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @-o-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @-webkit-keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @-moz-keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @-o-keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 
 </head>
