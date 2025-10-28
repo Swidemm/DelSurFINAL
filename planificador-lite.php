@@ -197,6 +197,9 @@ const worldToScreen = p => ({x: (p.x*state.scale*state.zoom)+state.pan.x, y:(p.y
 const screenToWorld = p => ({x: (p.x-state.pan.x)/(state.scale*state.zoom), y:(p.y-state.pan.y)/(state.scale*state.zoom)});
 function accentColor(){ return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ee7ff'; }
 
+// Punto de referencia actual del cursor en coordenadas mundiales. Se usa para el trazado previo de paredes.
+let currentWorld = null;
+
 
 // --------- Persistencia sencilla ---------
 function saveLocal(){
@@ -398,7 +401,39 @@ function draw(){
   const r=wrap.getBoundingClientRect();
   ctx.clearRect(0,0,r.width,r.height);
   drawGrid(); drawWalls(); drawOpenings(); drawItems();
+  // Dibuja una línea previa y medición mientras se está trazando una pared
+  drawPreview();
   hud.innerHTML = `Herramienta: <b>${state.tool}</b> · zoom <code>${state.zoom.toFixed(2)}</code> · escala <code>${state.scale} px/m</code>`;
+}
+
+// Dibuja una línea de previsualización y etiqueta de longitud mientras se traza una pared
+function drawPreview(){
+  if(state.tool==='wall' && state.drawing && currentWorld){
+    // Convertir coordenadas a pantalla
+    const a = worldToScreen(state.drawing.a);
+    const b = worldToScreen(currentWorld);
+    ctx.save();
+    // Línea punteada para la previsualización
+    ctx.setLineDash([5,5]);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#60a5fa';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Cálculo de longitud en metros
+    const dx = currentWorld.x - state.drawing.a.x;
+    const dy = currentWorld.y - state.drawing.a.y;
+    const length = Math.sqrt(dx*dx + dy*dy);
+    // Coordenada para la etiqueta (punto medio)
+    const midX = (a.x + b.x)/2;
+    const midY = (a.y + b.y)/2;
+    ctx.fillStyle = '#FDE68A';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.fillText(length.toFixed(2) + ' m', midX + 6, midY - 6);
+    ctx.restore();
+  }
 }
 
 // --------- Mini HUD contextual ---------
@@ -537,20 +572,35 @@ function renderInspector(){
 
 // --------- Interacción mínima (select + mover items + abrir duplicado con Alt) ---------
 let isPanning=false, drag=null;
-function updateCursor(){ plan.style.cursor = state.tool==='pan' ? 'grab' : 'default'; }
+function updateCursor(){
+  // Actualiza el cursor según la herramienta activa
+  plan.style.cursor = state.tool==='pan' ? 'grab' : 'default';
+  // Resalta el botón activo en la barra de herramientas
+  document.querySelectorAll('.toolbtn').forEach(btn => {
+    const id=btn.id||'';
+    const name=id.startsWith('tool-') ? id.substring(5) : '';
+    btn.dataset.active = (name===state.tool) ? 'true' : 'false';
+  });
+}
 
 plan.addEventListener('mousedown', (e)=>{
   const rect=plan.getBoundingClientRect(); const p={x:e.clientX-rect.left, y:e.clientY-rect.top}; const w=screenToWorld(p);
   // Si la herramienta activa es "wall" (pared) manejamos un trazado simple: el primer clic define el punto A y el segundo clic define el punto B.
   if(state.tool==='wall'){
-    // Si no hay un inicio de pared guardado, almacenamos el punto de inicio y salimos.
+    // Snapea el punto a la cuadrícula o decimal más cercano
+    const sx = snapVal(w.x);
+    const sy = snapVal(w.y);
+    // Primer clic: guarda punto inicial y prepara previsualización
     if(!state.drawing){
-      state.drawing = {a:{x:w.x,y:w.y}};
-    }else{
-      // Ya existe un punto de inicio, así que creamos la pared con el punto actual como final.
-      const wall = {id: uid(), a: state.drawing.a, b: {x:w.x, y:w.y}, thick: state.wallThick, height: state.wallHeight};
+      state.drawing = {a:{x:sx,y:sy}};
+      currentWorld = {x:sx,y:sy};
+    } else {
+      // Segundo clic: crea la pared hasta el punto actual
+      const wall = {id: uid(), a: state.drawing.a, b: {x:sx, y:sy}, thick: state.wallThick, height: state.wallHeight};
       state.walls.push(wall);
-      state.drawing = null;
+      // Mantener dibujo continuo: empezar nueva pared desde el punto final
+      state.drawing = {a:{x:sx,y:sy}};
+      // Registrar en historial y actualizar
       pushHist();
       draw();
       renderMiniHUD();
@@ -571,6 +621,15 @@ plan.addEventListener('mousedown', (e)=>{
 });
 plan.addEventListener('mousemove', (e)=>{
   const rect=plan.getBoundingClientRect(); const p={x:e.clientX-rect.left, y:e.clientY-rect.top}; const w=screenToWorld(p);
+  // Actualización de la previsualización al mover el mouse durante el trazado de paredes
+  if(state.tool==='wall' && state.drawing){
+    const sx = snapVal(w.x);
+    const sy = snapVal(w.y);
+    currentWorld = {x: sx, y: sy};
+    draw();
+    renderMiniHUD();
+    return;
+  }
   if(isPanning && window.__panStart){ const dx=e.clientX-window.__panStart.x, dy=e.clientY-window.__panStart.y; state.pan.x=window.__panStart.panX+dx; state.pan.y=window.__panStart.panY+dy; draw(); renderMiniHUD(); return; }
   if(drag){ const it=state.items.find(x=>x.id===drag.id); if(it){ it.x=snapVal(w.x-drag.dx); it.y=snapVal(w.y-drag.dy); draw(); renderMiniHUD(); } }
 });
@@ -603,6 +662,36 @@ $('#scaleInput').onchange=(e)=>{state.scale=parseFloat(e.target.value)||40; draw
 $('#wallH').onchange=(e)=>{state.wallHeight=parseFloat(e.target.value)||2.7;};
 $('#wallT').onchange=(e)=>{state.wallThick=parseFloat(e.target.value)||0.15;};
 $('#tool-reset').onclick=()=>{ if(confirm('¿Borrar TODO el proyecto actual?')){ state.walls=[]; state.openings=[]; state.items=[]; state.rooms=[]; state.selection=null; state.hist=[]; state.fut=[]; localStorage.removeItem('planificador-lite'); draw(); renderMiniHUD(); } };
+
+// Eliminar elemento seleccionado (pared, abertura o item) al presionar el botón Borrar
+$('#tool-erase').onclick=()=>{ deleteSelected(); draw(); renderMiniHUD(); renderInspector(); };
+
+// Deshacer y rehacer usando historial
+$('#tool-undo').onclick=()=>{
+  if(state.hist && state.hist.length>0){
+    // Guardar estado actual para poder rehacer
+    state.fut.push(JSON.stringify({walls:state.walls, openings:state.openings, items:state.items, rooms:state.rooms}));
+    const prev=JSON.parse(state.hist.pop());
+    state.walls = prev.walls || [];
+    state.openings = prev.openings || [];
+    state.items = prev.items || [];
+    state.rooms = prev.rooms || [];
+    state.selection=null;
+    draw(); renderMiniHUD(); renderInspector();
+  }
+};
+$('#tool-redo').onclick=()=>{
+  if(state.fut && state.fut.length>0){
+    state.hist.push(JSON.stringify({walls:state.walls, openings:state.openings, items:state.items, rooms:state.rooms}));
+    const next=JSON.parse(state.fut.pop());
+    state.walls = next.walls || [];
+    state.openings = next.openings || [];
+    state.items = next.items || [];
+    state.rooms = next.rooms || [];
+    state.selection=null;
+    draw(); renderMiniHUD(); renderInspector();
+  }
+};
 
 // --------- Biblioteca (drag-drop simple) ---------
 $('#library').addEventListener('dragstart', (e)=>{
