@@ -1,0 +1,208 @@
+/*
+ * Styles for the new 2D planificador. These rules provide a dark UI
+ * similar to the original planificador-lite but scoped for our new
+ * implementation. The colours are inspired by the existing palette in
+ * the project and keep the interface consistent with the rest of the site.
+ */
+
+:root {
+  --bg: #0f172a;
+  --panel: #1c2330;
+  --ink: #e8ecf1;
+  --muted: #aab4c0;
+  --grid: #1f2b36;
+  --grid-strong: #294256;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --accent: #6ee7ff;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: #121726;
+  border-bottom: 1px solid #1f2433;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.badge {
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  background: rgba(125, 211, 252, 0.12);
+  padding: 0.1rem 0.45rem;
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  border-radius: 0.5rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-left: auto;
+  align-items: center;
+}
+
+.toolgroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border: 1px solid #1f2433;
+  border-radius: 0.7rem;
+  background: #0f1422;
+}
+
+.toolgroup .title {
+  font-size: 0.72rem;
+  color: #9fb2c9;
+  margin-right: 0.3rem;
+}
+
+.toolbtn {
+  appearance: none;
+  border: 1px solid #27314a;
+  background: #151b2c;
+  color: var(--ink);
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  line-height: 1;
+  transition: transform 0.15s, background 0.15s;
+  box-shadow: var(--shadow);
+}
+
+.toolbtn:hover {
+  background: #1a2033;
+  transform: translateY(-1px);
+}
+
+.toolbtn.active {
+  border-color: #5eead4;
+  background: rgba(94, 234, 212, 0.1);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  gap: 10px;
+  padding: 10px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid #1c2130;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.panel h3 {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid #1f2433;
+  background: #121726;
+  font-size: 0.95rem;
+  color: #cdd6e3;
+}
+
+.canvas-wrap {
+  position: relative;
+  height: clamp(420px, 70vh, 900px);
+}
+
+#plan2d {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: radial-gradient(circle at 10% 0%, #131827 0%, #10131c 55%);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.overlays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hud {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  background: rgba(17, 21, 37, 0.85);
+  border: 1px solid #2b3247;
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.82rem;
+  color: #cdd6e3;
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 10px;
+  background: #101425;
+  border-top: 1px solid #1f2433;
+}
+
+.controls .group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #0f1425;
+  border: 1px solid #1f2235;
+  border-radius: 12px;
+  padding: 0.35rem 0.5rem;
+}
+
+.controls input[type="number"],
+.controls input[type="checkbox"] {
+  background: #0e1324;
+  border: 1px solid #26304a;
+  color: #e6edf7;
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+  min-width: 70px;
+}
+
+.controls label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* Selection highlight for list groups (inspector) */
+#inspectorPanel {
+  font-size: 0.9rem;
+  color: var(--ink);
+}
