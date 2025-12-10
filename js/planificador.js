@@ -15,6 +15,7 @@
     const wrap = document.getElementById('canvasWrap');
     const ctx = canvas.getContext('2d');
     const hudStatus = document.getElementById('hudStatus') || document.querySelector('#hud .status');
+    const inspectorContent = document.getElementById('inspectorContent');
 
     // Toolbar buttons
     const btnSelect = document.getElementById('tool-select');
@@ -143,6 +144,10 @@
     // Push current state to history
     function pushHist() {
       state.hist.push(cloneState());
+      // Límite de historial para optimizar memoria
+      if (state.hist.length > 50) {
+        state.hist.shift();
+      }
       state.fut = [];
       saveLocal();
     }
@@ -165,6 +170,7 @@
       state.selection = null;
       saveLocal();
       draw();
+      updateInspector();
     }
 
     // Redo undone action
@@ -183,6 +189,61 @@
       state.selection = null;
       saveLocal();
       draw();
+      updateInspector();
+    }
+
+    // Update Inspector Panel content
+    function updateInspector() {
+      if (!inspectorContent) return;
+      if (!state.selection) {
+        inspectorContent.innerHTML = '<div class="muted">Seleccioná una pared u objeto.</div>';
+        return;
+      }
+      
+      const sel = state.selection;
+      let html = '';
+      
+      if (sel.type === 'wall') {
+        const w = state.walls.find(x => x.id === sel.id);
+        if (w) {
+          const dist = distance(w.a, w.b).toFixed(2);
+          html = `
+            <div style="color:#cdd6e3; font-weight:600; margin-bottom:5px;">Pared</div>
+            <div class="muted" style="font-size:0.85rem;">Longitud: <span style="color:#e8ecf1">${dist} m</span></div>
+            <div class="muted" style="font-size:0.8rem; margin-top:8px;">[SUPR] para borrar</div>
+          `;
+        }
+      } else if (sel.type === 'door') {
+        const d = state.doors.find(x => x.id === sel.id);
+        if (d) {
+           html = `
+            <div style="color:#cdd6e3; font-weight:600; margin-bottom:5px;">Puerta</div>
+            <div class="muted" style="font-size:0.85rem;">Ancho: ${d.width} m</div>
+            <div class="muted" style="font-size:0.8rem; margin-top:8px;">[R] para invertir apertura</div>
+            <div class="muted" style="font-size:0.8rem;">[SUPR] para borrar</div>
+          `;
+        }
+      } else if (sel.type === 'window') {
+        const w = state.windows.find(x => x.id === sel.id);
+         if (w) {
+           html = `
+            <div style="color:#cdd6e3; font-weight:600; margin-bottom:5px;">Ventana</div>
+            <div class="muted" style="font-size:0.85rem;">Ancho: ${w.width} m</div>
+            <div class="muted" style="font-size:0.8rem; margin-top:8px;">[SUPR] para borrar</div>
+          `;
+        }
+      } else if (sel.type === 'item') {
+         const it = state.items.find(x => x.id === sel.id);
+         if (it) {
+           html = `
+            <div style="color:#cdd6e3; font-weight:600; margin-bottom:5px;">Objeto: ${it.type}</div>
+            <div class="muted" style="font-size:0.85rem;">Rotación: ${it.rot || 0}°</div>
+            <div class="muted" style="font-size:0.8rem; margin-top:8px;">[R] para rotar</div>
+            <div class="muted" style="font-size:0.8rem;">[SUPR] para borrar</div>
+          `;
+        }
+      }
+      inspectorContent.innerHTML = html;
     }
 
     // Helpers to set active tool button
@@ -203,6 +264,12 @@
         canvas.style.cursor = 'default';
       }
       drawHUD();
+      // Clear inspector on tool change
+      if (toolName !== 'select') {
+         state.selection = null;
+         updateInspector();
+         draw();
+      }
     }
 
     // Distance between two points
@@ -705,6 +772,7 @@
           }
         }
         state.selection = found;
+        updateInspector();
       }
       else if (state.tool === 'door') {
         // Place door on nearest wall
@@ -865,6 +933,7 @@
           state.selection = null;
           saveLocal();
           draw();
+          updateInspector();
         }
       } else if (e.key.toLowerCase() === 'r') {
         // Rotate items or toggle door hinge when selected
@@ -877,6 +946,7 @@
               door.hingeLeft = !door.hingeLeft;
               saveLocal();
               draw();
+              updateInspector();
             }
           } else if (sel.type === 'item') {
             const item = state.items.find(i => i.id === sel.id);
@@ -885,6 +955,7 @@
               item.rot = ((item.rot || 0) + 90) % 360;
               saveLocal();
               draw();
+              updateInspector();
             }
           }
         }
@@ -923,6 +994,7 @@
         state.selection = null;
         saveLocal();
         draw();
+        updateInspector();
       }
     });
     if (btnReset)  btnReset.addEventListener('click', () => {
@@ -940,6 +1012,7 @@
       state.scale = parseFloat(scaleInput?.value) || 40;
       saveLocal();
       draw();
+      updateInspector();
     });
     if (scaleInput) scaleInput.addEventListener('change', () => {
       const val = parseFloat(scaleInput.value);

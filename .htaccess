@@ -1,7 +1,17 @@
 # Enable rewriting
 RewriteEngine On
-# Redirect /api/contact (no trailing slash) to contact.php
+
+# Redirect /api/contact to contact.php
 RewriteRule ^api/contact$ /api/contact.php [L,QSA]
+
 # Ensure JSON file served with correct type
 AddType application/json .json
 AddDefaultCharset utf-8
+
+# --- BLOQUE DE SEGURIDAD AGREGADO ---
+# Prohibir acceso directo al archivo de base de datos
+<Files "contacts.json">
+    Order Allow,Deny
+    Deny from all
+</Files>
+# ------------------------------------
