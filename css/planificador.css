@@ -239,3 +239,10 @@ header {
   font-size: 0.9rem;
   color: var(--ink);
 }
+
+
+@media (max-width: 768px) {
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolgroup { flex-wrap: wrap; justify-content: center; }
+  .controls { justify-content: center; }
+}

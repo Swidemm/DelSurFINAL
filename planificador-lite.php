@@ -53,16 +53,16 @@
             <div><strong>Bacha</strong><br/><span>0.8 × 0.6 m</span></div>
           </div>
           <div class="lib-item" data-type="horno" data-w="0.6" data-d="0.6">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2" fill="#1c2640"/><line x1="5" y1="12" x2="19" y2="12" stroke="#6b7c96"/><rect x="7" y="8" width="6" height="3" fill="#31455f"/><rect x="7" y="13" width="6" height="3" fill="#31455f"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" fill="#1e2a42"/><rect x="7" y="7" width="10" height="10" rx="1" fill="#0c1424"/></svg>
             <div><strong>Horno</strong><br/><span>0.6 × 0.6 m</span></div>
           </div>
           <div class="lib-item" data-type="mesita" data-w="0.5" data-d="0.5">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="9" width="12" height="6" rx="1" fill="#1f2937"/><rect x="6" y="7" width="12" height="2" fill="#2b3a52"/></svg>
-            <div><strong>Mesita de luz</strong><br/><span>0.5 × 0.5 m</span></div>
+            <div><strong>Mesita</strong><br/><span>0.5 × 0.5 m</span></div>
           </div>
           <div class="lib-item" data-type="tv" data-w="1.2" data-d="0.2">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2" fill="#0a0f18"/><rect x="5" y="8" width="14" height="8" fill="#0c111b"/></svg>
-            <div><strong>Televisor</strong><br/><span>1.2 × 0.2 m</span></div>
+            <div><strong>TV</strong><br/><span>1.2 × 0.2 m</span></div>
           </div>
           <div class="lib-item" data-type="heladera" data-w="0.7" data-d="0.7">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2" fill="#1c2640"/><line x1="5" y1="12" x2="19" y2="12" stroke="#6b7c96"/></svg>

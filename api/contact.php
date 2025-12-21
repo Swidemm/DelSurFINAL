@@ -13,10 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
-// 3. Validar datos mínimos requeridos
-if (!is_array($data) || empty($data['email']) || empty($data['nombre'])) {
+// 3. Validar datos mínimos requeridos, formato de email y Honeypot (Anti-spam)
+if (!is_array($data) || empty($data['email']) || empty($data['nombre']) || !empty($data['honeypot'])) {
     http_response_code(400);
-    echo json_encode(['error' => 'Datos incompletos o inválidos']);
+    echo json_encode(['error' => 'Datos incompletos, inválidos o spam detectado']);
+    exit;
+}
+if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Por favor, ingresa un email válido']);
     exit;
 }
 
@@ -26,11 +31,10 @@ $data['date'] = date('c'); // ISO 8601
 // Ruta al archivo de contactos
 $contactsFile = __DIR__ . '/../contacts.json';
 
-// 4. Abrir el archivo en modo escritura segura
-$fp = fopen($contactsFile, 'c+'); // 'c+' crea el archivo si no existe, o lee/escribe si existe
+// 4. Abrir el archivo en modo escritura segura con bloqueo
+$fp = fopen($contactsFile, 'c+');
 
-if ($fp && flock($fp, LOCK_EX)) { // LOCK_EX = Bloqueo exclusivo (solo yo escribo)
-    
+if ($fp && flock($fp, LOCK_EX)) {
     // Leer contenido actual
     $fileSize = filesize($contactsFile);
     $currentData = $fileSize > 0 ? fread($fp, $fileSize) : '[]';
@@ -41,26 +45,23 @@ if ($fp && flock($fp, LOCK_EX)) { // LOCK_EX = Bloqueo exclusivo (solo yo escrib
     }
 
     // Agregar el nuevo contacto
+    // Quitamos el campo honeypot antes de guardar
+    unset($data['honeypot']);
     $contacts[] = $data;
 
-    // Borrar contenido previo del archivo y rebobinar al inicio
+    // Borrar contenido previo y escribir
     ftruncate($fp, 0);
     rewind($fp);
-
-    // Escribir los datos actualizados
     fwrite($fp, json_encode($contacts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     
-    // Asegurar que se guarden los cambios antes de soltar el candado
     fflush($fp);
-    flock($fp, LOCK_UN); // Soltar candado
+    flock($fp, LOCK_UN);
     fclose($fp);
-
-    echo json_encode(['success' => true]);
-
+    
+    http_response_code(200);
+    echo json_encode(['message' => 'Mensaje recibido correctamente']);
 } else {
-    // Si no se pudo bloquear el archivo (muy raro), dar error
     http_response_code(500);
-    echo json_encode(['error' => 'Error interno al guardar contacto']);
-    if ($fp) fclose($fp);
+    echo json_encode(['error' => 'Error interno del servidor']);
 }
 ?>
