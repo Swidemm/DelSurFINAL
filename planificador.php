@@ -3,107 +3,146 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Planificador de Espacios — Del Sur Construcciones</title>
-  <meta name="description" content="Diseña y visualiza tus espacios en 2D y 3D con nuestro planificador." />
-  <meta name="theme-color" content="#0f4c5c" />
-
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Planificador de Espacios — Del Sur Construcciones" />
-  <meta property="og:description" content="Construí y visualizá tus planos en 3D con nuestro planificador integral." />
-  <meta property="og:image" content="./imagenes/og-cover.webp" />
-  <meta property="og:url" content="https://delsurconstrucciones.example/planificador.php" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Planificador de Espacios — Del Sur Construcciones" />
-  <meta name="twitter:description" content="Construí y visualizá tus planos en 3D con nuestro planificador integral." />
-  <meta name="twitter:image" content="./imagenes/og-cover.webp" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
+  <title>Acceso Clientes — Del Sur Construcciones</title>
+  <meta name="robots" content="noindex" />
+  
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { theme: { extend: {
-    colors: {
-      brand: {
-        50:'#e6f0f2',100:'#cfe2e6',200:'#9fc4cd',300:'#6ea6b3',400:'#3e889a',500:'#0f6a81',600:'#0d5a6d',700:'#0b4a59',800:'#083945',900:'#062f3a'
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { delsur: { blue: '#1e2952', dark: '#0f172a', orange: '#f97316' } },
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
       }
-    },
-    fontFamily:{ sans:['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'] }
-  }}};</script>
-
-  <link rel="icon" href="./favicon/favicon.ico" />
-  <link rel="manifest" href="./favicon/site.webmanifest" />
-  <link rel="stylesheet" href="./css/styles.css" />
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    @keyframes loading {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(0); }
+        100% { transform: translateX(100%); }
+    }
+    #preloader { transition: opacity 0.6s ease-out, visibility 0.6s; }
+  </style>
 </head>
-<body class="font-sans text-slate-800">
-  <div class="bg-brand-900 text-white text-sm">
-    <div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between">
-      <p>Atendemos AMBA · Lun–Vie 9–18 h</p>
-      <a href="https://wa.me/5491123941812" class="underline hover:no-underline">WhatsApp: +54 9 11 2394‑1812</a>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex items-center justify-center relative overflow-hidden">
+
+  <div id="preloader" class="fixed inset-0 z-[100] bg-slate-900 flex items-center justify-center">
+    <div class="flex flex-col items-center gap-6">
+        <img src="./imagenes/logo.webp" alt="Cargando..." class="h-20 w-auto animate-pulse brightness-0 invert" />
+        <div class="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+            <div class="h-full bg-delsur-orange w-full absolute top-0 left-0 animate-[loading_1.5s_infinite_linear]"></div>
+        </div>
+        <p class="text-xs text-slate-500 font-medium tracking-widest uppercase">Iniciando Sistema</p>
     </div>
   </div>
 
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-3 py-3 flex items-center gap-4">
-      <a href="index.php" class="flex items-center gap-3 mr-auto">
-        <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-14 w-auto logo-slide" />
-        <span class="sr-only">Del Sur Construcciones</span>
-      </a>
-      <nav class="hidden md:flex gap-6 text-slate-700 nav-drop">
-        <a class="hover:text-brand-700 focus-ring" href="index.php#servicios">Servicios</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.php#proyectos">Proyectos</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.php#proceso">Proceso</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.php#faq">Preguntas</a>
-        <a class="text-brand-700 font-semibold focus-ring" href="planificador.php">Planificador</a>
-        <a class="hover:text-brand-700 focus-ring" href="pagos.php">Pagos</a>
-        <a class="hover:text-brand-700 focus-ring" href="index.php#contacto">Contacto</a>
-      </nav>
-      <a href="index.php#contacto" class="ml-4 inline-flex items-center rounded-xl bg-brand-700 px-4 py-2 text-white hover:bg-brand-600 focus-ring btn-anim nav-drop">Solicitar presupuesto</a>
-    </div>
-  </header>
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgNDBMMDQgMEgwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] opacity-20"></div>
+  <div class="absolute top-0 right-0 w-96 h-96 bg-delsur-orange opacity-10 rounded-full blur-[100px]"></div>
 
-  <section class="py-16 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-3">
-      <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Planificador de espacios 2D/3D</h1>
-      <p class="text-lg md:text-xl text-slate-600 mb-8">Construí tus planos y visualizalos en 3D con nuestro planificador integral.</p>
-    </div>
-  </section>
+  <div id="loginScreen" class="relative z-10 w-full max-w-md p-4">
+      <div class="glass rounded-2xl p-8 shadow-2xl text-center">
+          <img src="./imagenes/logo.webp" alt="Del Sur" class="h-16 w-auto mx-auto mb-6 brightness-0 invert" />
+          <h1 class="text-2xl font-bold mb-2">Planificador Studio 2D</h1>
+          <p class="text-slate-400 text-sm mb-8">Área exclusiva para clientes con Pack Premium.</p>
+          <form id="loginForm" class="space-y-4">
+              <div>
+                  <input type="password" id="accessCode" placeholder="Ingresá tu Clave de Acceso" 
+                      class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white focus:ring-2 focus:ring-delsur-orange focus:outline-none transition-all placeholder:text-slate-600"
+                  >
+              </div>
+              <button type="submit" class="w-full py-3 bg-delsur-orange hover:bg-orange-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-orange-900/20">INGRESAR AL SISTEMA</button>
+              <p id="errorMsg" class="text-red-400 text-xs h-4 mt-2"></p>
+          </form>
+          <div class="mt-6 pt-6 border-t border-white/10">
+              <p class="text-xs text-slate-500">¿No tenés clave?</p>
+              <a href="pagos.php" class="text-delsur-orange text-xs font-bold hover:underline">Adquirir Pack Premium</a>
+          </div>
+          <div class="mt-4"><a href="index.php" class="text-slate-500 text-xs hover:text-white transition-colors">← Volver al inicio</a></div>
+      </div>
+  </div>
 
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-3">
-      <iframe src="planificador-lite.php" class="w-full rounded-xl border border-slate-200 shadow-sm" style="height: 85vh;" allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <footer class="bg-slate-950 text-slate-400 text-sm">
-    <div class="max-w-7xl mx-auto px-3 py-10 grid md:grid-cols-3 gap-8">
-      <div>
-        <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-12 w-auto mb-3" />
-        <p>© <span id="year"></span> Del Sur Construcciones. Todos los derechos reservados.</p>
-      </div>
-      <div>
-        <h3 class="font-semibold text-white mb-2">Secciones</h3>
-        <ul class="space-y-1">
-          <li><a href="index.php#servicios" class="hover:text-white">Servicios</a></li>
-          <li><a href="index.php#proyectos" class="hover:text-white">Proyectos</a></li>
-          <li><a href="index.php#proceso" class="hover:text-white">Proceso</a></li>
-          <li><a href="index.php#faq" class="hover:text-white">Preguntas</a></li>
-          <li><a href="planificador.php" class="hover:text-white">Planificador</a></li>
-          <li><a href="pagos.php" class="hover:text-white">Pagos</a></li>
-          <li><a href="index.php#contacto" class="hover:text-white">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="font-semibold text-white mb-2">Contacto</h3>
-        <p>WhatsApp: +54 9 11 2394‑1812</p>
-        <p>Email: lauti.seid@gmail.com</p>
-      </div>
-    </div>
-  </footer>
+  <div id="appContainer" class="fixed inset-0 z-50 bg-slate-900 hidden">
+      <iframe src="planificador-lite.php" class="w-full h-full border-0" allowfullscreen></iframe>
+      
+      <button id="btnExit" class="absolute bottom-4 left-4 bg-red-500/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold backdrop-blur-sm transition-colors shadow-lg flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Salir y Volver al Inicio
+      </button>
+  </div>
 
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // 1. PRELOADER
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('preloader');
+            loader.classList.add('opacity-0', 'invisible');
+        }, 2000);
+    });
+    
+    // 2. LÓGICA DE LOGIN
+    const loginForm = document.getElementById('loginForm');
+    const loginScreen = document.getElementById('loginScreen');
+    const appContainer = document.getElementById('appContainer');
+    const errorMsg = document.getElementById('errorMsg');
+    const SECRET_CODE = "DELSUR24"; 
+
+    // Verificar si ya estaba logueado
+    if (sessionStorage.getItem('isLogged') === 'true') { showApp(); }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('accessCode').value;
+        if (input === SECRET_CODE) {
+            sessionStorage.setItem('isLogged', 'true');
+            showApp();
+        } else {
+            errorMsg.textContent = "Clave incorrecta. Revisá tu comprobante.";
+            document.getElementById('accessCode').classList.add('border-red-500');
+            setTimeout(() => {
+                document.getElementById('accessCode').classList.remove('border-red-500');
+                errorMsg.textContent = "";
+            }, 2000);
+        }
+    });
+
+    function showApp() {
+        loginScreen.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+    }
+
+    // 3. LÓGICA DEL BOTÓN SALIR (NUEVO)
+    document.getElementById('btnExit').addEventListener('click', () => {
+        // Mostrar pantalla de carga para transición suave
+        document.getElementById('preloader').classList.remove('opacity-0', 'invisible');
+        
+        // Limpiar la sesión para que si vuelve, le pida clave de nuevo
+        sessionStorage.removeItem('isLogged');
+        
+        // Redirigir al Index después de un breve delay
+        setTimeout(() => {
+            window.location.href = 'index.php';
+        }, 800);
+    });
+
+    // 4. TRANSICIONES DE LINKS NORMALES (Login screen)
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+                e.preventDefault();
+                document.getElementById('preloader').classList.remove('opacity-0', 'invisible');
+                setTimeout(() => window.location.href = href, 400);
+            }
+        });
+    });
   </script>
 </body>
 </html>

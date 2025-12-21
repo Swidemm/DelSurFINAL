@@ -8,6 +8,8 @@
 /* Define a CSS custom property for focus ring color */
 :root {
   --ring: #0f6a81;
+  --delsur-blue: #1e2952;
+    --delsur-light: #f8fafc;
 }
 
 /* Enable smooth scrolling when focusing elements via keyboard */
@@ -99,4 +101,49 @@ details[open] > .faq-answer {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Animación del degradado de fondo para el hero */
+#inicio {
+    /* Define el degradado con los colores de tu marca */
+    background: linear-gradient(
+        45deg,
+        var(--delsur-blue), /* Color azul oscuro */
+        #374151,          /* Un gris azulado intermedio */
+        var(--delsur-blue), /* Color azul oscuro de nuevo */
+        #4b5563           /* Un gris más claro */
+    );
+    /* Tamaño del fondo mayor para permitir el movimiento */
+    background-size: 400% 400%;
+    /* Aplica la animación */
+    animation: move-gradient 15s ease infinite;
+    position: relative; /* Necesario para el patrón superpuesto */
+    overflow: hidden; /* Asegura que nada se salga */
+}
+
+/* Keyframes para mover el degradado */
+@keyframes move-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Mantiene el patrón de puntos superpuesto y sutil */
+#inicio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--delsur-light) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.1; /* Muy sutil */
+    pointer-events: none; /* No interfiere con los clics */
 }
