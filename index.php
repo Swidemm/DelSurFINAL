@@ -182,7 +182,7 @@
           </p>
           
           <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="#proyectos" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">
+            <a href="proyectos.php" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">
               Ver Galería
             </a>
             <a href="proceso.php" class="px-8 py-4 rounded-xl bg-delsur-orange text-white font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-500/40">
@@ -322,7 +322,7 @@
             <h2 class="font-display text-3xl md:text-4xl font-bold text-delsur-blue">Nuestros Proyectos</h2>
             <p class="text-slate-500 mt-2 text-lg">La mejor carta de presentación es nuestra obra terminada.</p>
         </div>
-        <a href="#" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
+        <a href="proyectos.php" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
       </div>
       <div class="grid md:grid-cols-3 gap-8">
         <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-100 relative shadow-md hover:shadow-xl transition-all">
@@ -411,15 +411,15 @@
         <h3 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Navegación</h3>
         <ul class="space-y-2">
           <li><a href="#servicios" class="hover:text-delsur-orange transition-colors">Servicios</a></li>
-          <li><a href="#proyectos" class="hover:text-delsur-orange transition-colors">Proyectos</a></li>
+          <li><a href="proyectos.php" class="hover:text-delsur-orange transition-colors">Proyectos</a></li>
           <li><a href="pagos.php" class="hover:text-delsur-orange transition-colors">Medios de Pago</a></li>
         </ul>
       </div>
       <div>
         <h3 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Legal</h3>
         <ul class="space-y-2">
-          <li><a href="#" class="hover:text-white transition-colors">Términos y condiciones</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Política de privacidad</a></li>
+          <li><a href="legales.php#terminos" class="hover:text-white transition-colors">Términos y condiciones</a></li>
+          <li><a href="legales.php#privacidad" class="hover:text-white transition-colors">Política de privacidad</a></li>
         </ul>
       </div>
     </div>
