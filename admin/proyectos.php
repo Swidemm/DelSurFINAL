@@ -98,10 +98,13 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
                 $imgPortada = is_array($p['imagenes']) ? $p['imagenes'][0] : $p['imagenes'];
             ?>
             <div class="bg-white rounded-xl shadow-sm overflow-hidden group border border-slate-200 relative flex flex-col">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="../<?php echo htmlspecialchars($imgPortada); ?>" class="w-full h-full object-cover">
+                
+                <div class="relative w-full h-48 bg-slate-100 overflow-hidden">
+                    <img src="../<?php echo htmlspecialchars($imgPortada); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     
-                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                         <button onclick='editar(<?php echo json_encode($p); ?>)' class="bg-white text-slate-700 p-2 rounded-full shadow hover:text-orange-600 transition-colors" title="Editar">
                             <i class="ph ph-pencil-simple"></i>
                         </button>
