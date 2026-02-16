@@ -14,10 +14,9 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* Refuerzo para que ninguna imagen se escape de su celda */
         .img-container {
             width: 100%;
-            padding-top: 56.25%; /* Relación de aspecto 16:9 */
+            padding-top: 56.25%; /* Relación 16:9 */
             position: relative;
             overflow: hidden;
             background-color: #f1f5f9;
@@ -28,7 +27,7 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Esto la resizearía a los bordes recortando lo que sobre */
+            object-fit: cover;
             display: block;
         }
     </style>
@@ -60,11 +59,12 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
                 <div class="grid md:grid-cols-3 gap-6 mb-6">
                     <div class="space-y-4">
                         <label class="block text-xs font-bold uppercase text-slate-400">1. Info Principal</label>
-                        <input type="text" id="titulo" name="titulo" required class="w-full border p-2.5 rounded bg-slate-50 outline-none focus:ring-2 focus:ring-orange-500" placeholder="Título">
+                        <input type="text" id="titulo" name="titulo" required class="w-full border p-2.5 rounded bg-slate-50 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Título">
                         <select id="categoria" name="categoria" class="w-full border p-2.5 rounded bg-slate-50">
                             <option value="Vivienda">Vivienda</option>
                             <option value="Comercial">Comercial</option>
                             <option value="Refacción">Refacción</option>
+                            <option value="Industrial">Industrial</option>
                         </select>
                         <textarea id="descripcion" name="descripcion" required rows="4" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Descripción..."></textarea>
                     </div>
@@ -73,7 +73,7 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
                         <label class="block text-xs font-bold uppercase text-slate-400">2. Detalles Técnicos</label>
                         <div class="grid grid-cols-2 gap-4">
                             <input type="text" id="ubicacion" name="ubicacion" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Ubicación">
-                            <input type="text" id="anio" name="anio" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Año" value="2026">
+                            <input type="text" id="anio" name="anio" class="w-full border p-2.5 rounded bg-slate-50" value="2026">
                         </div>
                         <input type="text" id="medidas" name="medidas" class="w-full border p-2.5 rounded bg-slate-50" placeholder="m²">
                         <input type="text" id="titulo_features" name="titulo_features" class="w-full border p-2.5 rounded bg-slate-50" value="Servicios Incluidos">
@@ -81,13 +81,10 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
 
                     <div class="space-y-4">
                         <label class="block text-xs font-bold uppercase text-slate-400">3. Items y Fotos</label>
-                        <textarea id="features" name="features" rows="4" class="w-full border p-2.5 rounded bg-slate-50 text-sm" placeholder="Un ítem por línea"></textarea>
-                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center relative hover:bg-slate-50 cursor-pointer">
+                        <textarea id="features" name="features" rows="4" class="w-full border p-2.5 rounded bg-slate-50 text-sm" placeholder="Un ítem por renglón"></textarea>
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center relative hover:bg-slate-50">
                             <input type="file" name="imagenes[]" multiple accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewFiles(this)">
-                            <div class="text-slate-400 text-sm">
-                                <i class="ph ph-images text-2xl"></i><br>
-                                <span id="fileLabel">Subir fotos</span>
-                            </div>
+                            <span id="fileLabel" class="text-slate-400 text-sm">Subir fotos</span>
                         </div>
                     </div>
                 </div>
@@ -103,13 +100,22 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         <div class="grid md:grid-cols-3 gap-8">
             <?php foreach($proyectos as $p): 
                 $imgPortada = is_array($p['imagenes']) ? $p['imagenes'][0] : $p['imagenes'];
+                $esDestacado = isset($p['destacado']) && $p['destacado'] === true;
             ?>
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col group">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col group relative">
                 
+                <?php if($esDestacado): ?>
+                    <div class="absolute top-2 left-2 z-20 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm flex items-center gap-1">
+                        <i class="ph ph-star-fill"></i> EN INICIO
+                    </div>
+                <?php endif; ?>
+
                 <div class="img-container">
                     <img src="../<?php echo htmlspecialchars($imgPortada); ?>" alt="Proyecto">
-                    
-                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+                        <button onclick="toggleDestacado('<?php echo $p['id']; ?>')" class="p-2 rounded-full shadow transition-colors <?php echo $esDestacado ? 'bg-orange-500 text-white' : 'bg-white text-slate-400 hover:text-orange-500'; ?>">
+                            <i class="ph ph-star<?php echo $esDestacado ? '-fill' : ''; ?>"></i>
+                        </button>
                         <button onclick='editar(<?php echo json_encode($p); ?>)' class="bg-white text-slate-700 p-2 rounded-full shadow hover:text-orange-600">
                             <i class="ph ph-pencil-simple"></i>
                         </button>
@@ -119,15 +125,15 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
                     </div>
                 </div>
                 
-                <div class="p-5 flex-1">
+                <div class="p-5 flex-1 flex flex-col">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest"><?php echo htmlspecialchars($p['categoria']); ?></span>
-                        <span class="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded font-bold"><?php echo htmlspecialchars($p['anio'] ?? '2026'); ?></span>
+                        <span class="text-[10px] text-slate-400 font-bold"><?php echo htmlspecialchars($p['anio'] ?? '2026'); ?></span>
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg mb-4 leading-tight"><?php echo htmlspecialchars($p['titulo']); ?></h3>
-                    <div class="flex gap-4 text-[11px] text-slate-500 font-medium">
-                        <span class="flex items-center gap-1"><i class="ph ph-map-pin"></i> <?php echo htmlspecialchars($p['ubicacion'] ?? '-'); ?></span>
-                        <span class="flex items-center gap-1"><i class="ph ph-ruler"></i> <?php echo htmlspecialchars($p['medidas'] ?? '-'); ?></span>
+                    <div class="mt-auto flex gap-4 text-[11px] text-slate-500">
+                        <span><i class="ph ph-map-pin"></i> <?php echo htmlspecialchars($p['ubicacion'] ?? '-'); ?></span>
+                        <span><i class="ph ph-ruler"></i> <?php echo htmlspecialchars($p['medidas'] ?? '-'); ?></span>
                     </div>
                 </div>
             </div>
@@ -137,9 +143,15 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
 
     <script>
     function previewFiles(input) {
-        const count = input.files.length;
-        document.getElementById('fileLabel').innerText = count + " fotos elegidas";
+        document.getElementById('fileLabel').innerText = input.files.length + " fotos elegidas";
         document.getElementById('fileLabel').className = "text-orange-600 font-bold";
+    }
+
+    async function toggleDestacado(id) {
+        const fd = new FormData(); fd.append('accion', 'toggle_destacado'); fd.append('id', id);
+        const res = await fetch('guardar_proyecto.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if(data.success) location.reload();
     }
 
     function editar(p) {
@@ -152,7 +164,6 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         document.getElementById('anio').value = p.anio || '';
         document.getElementById('medidas').value = p.medidas || '';
         document.getElementById('titulo_features').value = p.titulo_features || '';
-        
         let feats = p.features;
         if(Array.isArray(feats)) feats = feats.join('\n');
         document.getElementById('features').value = feats || '';
@@ -161,16 +172,12 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         document.getElementById('btnText').innerText = 'Guardar Cambios';
         document.getElementById('btnCancel').classList.remove('hidden');
         document.getElementById('btnSave').classList.replace('bg-orange-600', 'bg-blue-600');
-        
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function resetForm() {
         document.getElementById('formProyecto').reset();
-        document.getElementById('idInput').value = '';
         document.getElementById('accionInput').value = 'crear';
-        document.getElementById('formTitle').innerText = 'Nuevo Proyecto';
-        document.getElementById('btnText').innerText = 'Publicar Proyecto';
         document.getElementById('btnCancel').classList.add('hidden');
         document.getElementById('btnSave').classList.replace('bg-blue-600', 'bg-orange-600');
     }
@@ -180,17 +187,14 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         const btn = document.getElementById('btnSave');
         btn.disabled = true;
         const formData = new FormData(e.target);
-        
-        try {
-            const res = await fetch('guardar_proyecto.php', { method: 'POST', body: formData });
-            const data = await res.json();
-            if(data.success) location.reload();
-            else alert('Error: ' + data.error);
-        } catch(err) { alert('Error de conexión'); }
+        const res = await fetch('guardar_proyecto.php', { method: 'POST', body: formData });
+        const data = await res.json();
+        if(data.success) location.reload();
+        else { alert(data.error); btn.disabled = false; }
     });
 
     async function borrar(id) {
-        if(!confirm('¿Borrar proyecto?')) return;
+        if(!confirm('¿Eliminar proyecto?')) return;
         const fd = new FormData(); fd.append('accion','eliminar'); fd.append('id', id);
         await fetch('guardar_proyecto.php', { method: 'POST', body: fd });
         location.reload();
