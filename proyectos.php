@@ -150,14 +150,14 @@
       </div>
   </div>
 
-  <script>
+<script>
     // ----------------------------
     // LOGICA DEL PRELOADER
     // ----------------------------
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('preloader');
-            loader.classList.add('opacity-0', 'invisible');
+            if(loader) loader.classList.add('opacity-0', 'invisible');
         }, 2000);
     });
 
@@ -165,93 +165,61 @@
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            // Ignoramos si es #, javascript o el botón de acción del modal (ya que ese tiene logica dinamica)
-            // o si abre en nueva pestaña
             if (href && !href.startsWith('#') && !href.startsWith('javascript') && link.target !== '_blank') {
                 e.preventDefault();
-                document.getElementById('preloader').classList.remove('opacity-0', 'invisible');
+                const loader = document.getElementById('preloader');
+                if(loader) loader.classList.remove('opacity-0', 'invisible');
                 setTimeout(() => window.location.href = href, 400); 
             }
         });
     });
 
+    // ==========================================
+    // 1. BASE DE DATOS DINÁMICA (PHP -> JS)
+    // ==========================================
+    
+    // Leemos el JSON real desde el servidor
+    const projectsRaw = <?php 
+        $jsonFile = 'proyectos.json';
+        echo file_exists($jsonFile) ? file_get_contents($jsonFile) : '[]';
+    ?>;
 
-    // ==========================================
-    // 1. BASE DE DATOS DE PROYECTOS (EDITAR ACÁ)
-    // ==========================================
-    const projects = [
-        {
-            id: 1,
-            title: "Residencia Los Álamos",
-            category: "vivienda",
-            size: "240m²",
-            location: "Canning, Bs As",
-            year: "2023",
-            description: "Una vivienda unifamiliar de estilo minimalista que prioriza la conexión con el exterior. Se utilizaron materiales nobles como hormigón a la vista y madera para generar calidez.",
-            features: ["Proyecto Ejecutivo", "Dirección de Obra", "Interiorismo", "Parquización"],
-            images: [
-                'https://images.unsplash.com/photo-1600596542815-2495db98dada?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80'
-            ]
-        },
-        {
-            id: 2,
-            title: "Oficinas Tech Center",
-            category: "comercial",
-            size: "500m²",
-            location: "Puerto Madero",
-            year: "2022",
-            description: "Reforma integral de planta libre para empresa de tecnología. Espacios colaborativos, salas de reunión acústicas y zonas de relax.",
-            features: ["Diseño 3D", "Mobiliario a medida", "Instalaciones de red", "Iluminación técnica"],
-            images: [
-                'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80'
-            ]
-        },
-        {
-            id: 3,
-            title: "Renovación Palermo",
-            category: "reforma",
-            size: "120m²",
-            location: "Palermo Soho",
-            year: "2024",
-            description: "Reciclaje total de PH antiguo. Se recuperaron los pisos de pinotea y se modernizó la cocina y baños integrándolos al patio central.",
-            features: ["Albañilería general", "Instalaciones sanitarias", "Restauración", "Pintura"],
-            images: [
-                'https://images.unsplash.com/photo-1556912173-3db9963ee790?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80'
-            ]
-        },
-        {
-            id: 4,
-            title: "Casa del Lago",
-            category: "vivienda",
-            size: "320m²",
-            location: "Nordelta",
-            year: "2023",
-            description: "Diseño exclusivo con vistas panorámicas al lago. Grandes ventanales y estructura metálica para lograr luces amplias sin columnas.",
-            features: ["Llave en mano", "Piscina sin fin", "Domótica", "Sustentabilidad"],
-            images: [
-                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?auto=format&fit=crop&w=800&q=80'
-            ]
-        },
-        {
-            id: 5,
-            title: "Local Gastronómico",
-            category: "comercial",
-            size: "85m²",
-            location: "San Telmo",
-            year: "2023",
-            description: "Identidad de marca aplicada a la arquitectura. Cocina a la vista y barra de tragos diseñada en microcemento.",
-            features: ["Habilitación municipal", "Gas industrial", "Diseño de marca", "Fachada"],
-            images: [
-                'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'
-            ]
-        }
-    ];
+    // ADAPTADOR: Convertimos los datos del Admin al formato de tu diseño
+    const projects = projectsRaw.map(p => {
+        // Aseguramos que imagenes sea un array
+        let imgs = Array.isArray(p.imagenes) ? p.imagenes : [p.imagenes];
+        // Si no hay imagen, ponemos el logo por defecto
+        if (imgs.length === 0 || !imgs[0]) imgs = ['./imagenes/logo.webp'];
+
+        return {
+            id: p.id,
+            title: p.titulo,
+            category: p.categoria.toLowerCase(), // Admin: "Vivienda" -> Front: "vivienda"
+            // Intentamos sacar los m2 de la descripción, si no dice "Consultar"
+            size: (p.descripcion && p.descripcion.includes('m²')) ? p.descripcion.match(/\d+m²/)[0] : "Consultar",
+            location: "Berazategui, BA", // Dato por defecto (no está en el admin aún)
+            year: p.fecha ? p.fecha.substring(0, 4) : new Date().getFullYear(),
+            description: p.descripcion,
+            // Features genéricas (ya que el admin simple no tiene lista de features)
+            features: ["Proyecto Ejecutivo", "Dirección de Obra", "Llave en mano"],
+            images: imgs
+        };
+    });
+
+    // Si no hay proyectos cargados, mostramos uno de ejemplo para que no se rompa la web
+    if (projects.length === 0) {
+        projects.push({
+            id: 'demo',
+            title: 'Proyecto Ejemplo',
+            category: 'vivienda',
+            size: '150m²',
+            location: 'Muestra',
+            year: '2024',
+            description: 'Cargá tus propios proyectos desde el Panel de Administración /admin',
+            features: ['Ejemplo', 'Admin'],
+            images: ['./imagenes/logo.webp']
+        });
+    }
 
     // ==========================================
     // 2. LÓGICA DE RENDERIZADO Y FILTROS
@@ -260,16 +228,23 @@
     const filterBtns = document.querySelectorAll('.filter-btn');
 
     function renderProjects(filter = 'all') {
+        if(!grid) return;
         grid.innerHTML = ''; // Limpiar grid
         
         const filtered = filter === 'all' 
             ? projects 
             : projects.filter(p => p.category === filter);
 
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p class="col-span-3 text-center text-slate-400 py-10">No hay proyectos en esta categoría aún.</p>';
+            return;
+        }
+
         filtered.forEach(p => {
             // Creamos la tarjeta
             const card = document.createElement('div');
             card.className = "group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-slate-100";
+            // Usamos un ID seguro por si hay espacios
             card.onclick = () => openModal(p.id);
 
             card.innerHTML = `
@@ -296,7 +271,12 @@
     function filterProjects(cat) {
         // Actualizar botones
         filterBtns.forEach(btn => {
-            if(btn.textContent.toLowerCase().includes(cat === 'all' ? 'todos' : cat)) {
+            // Normalizamos para comparar 'Vivienda' con 'vivienda'
+            const btnCat = btn.getAttribute('data-category') || btn.textContent.toLowerCase().trim();
+            const targetCat = cat === 'all' ? 'todos' : cat;
+            
+            // Lógica visual simple: si el texto del botón coincide con la categoría
+            if(btn.textContent.toLowerCase().includes(targetCat)) {
                 btn.classList.add('bg-delsur-blue', 'text-white', 'border-delsur-blue', 'shadow-lg');
                 btn.classList.remove('bg-white', 'text-slate-500', 'border-slate-200');
             } else {
@@ -340,7 +320,7 @@
 
         // Configurar Botón de Acción para llevar el nombre del proyecto
         const actionBtn = document.getElementById('modal-action-btn');
-        actionBtn.href = `comenzar.php?ref=${encodeURIComponent(currentProject.title)}`;
+        actionBtn.href = `comenzar.php?ref_proyecto=${encodeURIComponent(currentProject.title)}`;
 
         // Configurar Carrusel
         setupCarousel(currentProject.images);
@@ -348,6 +328,7 @@
         // Mostrar Modal con animación
         modal.classList.remove('hidden');
         document.body.classList.add('modal-open');
+        // Pequeño delay para permitir que el navegador renderice antes de la animación CSS
         setTimeout(() => {
             modalContent.classList.remove('modal-enter');
             modalContent.classList.add('modal-enter-active');
@@ -357,6 +338,7 @@
     }
 
     function closeModal() {
+        if(!modalContent) return;
         modalContent.classList.remove('modal-enter-active');
         modalContent.classList.add('modal-exit-active');
         
@@ -378,15 +360,20 @@
 
         images.forEach((img, index) => {
             // Slide
+            const imgContainer = document.createElement('div');
+            imgContainer.className = "min-w-full h-full"; // Importante para flex layout
+            
             const imgEl = document.createElement('img');
             imgEl.src = img;
-            imgEl.className = "carousel-slide";
-            track.appendChild(imgEl);
+            imgEl.className = "w-full h-full object-cover";
+            
+            imgContainer.appendChild(imgEl);
+            track.appendChild(imgContainer);
 
             // Dot
             const dot = document.createElement('button');
             dot.className = `w-2 h-2 rounded-full transition-all ${index === 0 ? 'bg-white w-6' : 'bg-white/50'}`;
-            dot.onclick = () => goToSlide(index);
+            dot.onclick = (e) => { e.stopPropagation(); goToSlide(index); };
             dots.appendChild(dot);
         });
         
@@ -395,6 +382,7 @@
 
     function updateCarousel() {
         const track = document.getElementById('carousel-track');
+        // Usamos translate negativo para mover a la izquierda
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
         
         // Update dots
@@ -419,13 +407,15 @@
     function goToSlide(n) {
         currentSlide = n;
         updateCarousel();
-        stopAutoPlay(); // Si el usuario toca, frenamos el auto
-        startAutoPlay(); // Y reiniciamos el timer
+        stopAutoPlay(); 
+        startAutoPlay(); 
     }
 
     function startAutoPlay() {
         stopAutoPlay();
-        autoPlayInterval = setInterval(nextSlide, 3000); // 3 segundos
+        if(currentProject && currentProject.images.length > 1) {
+            autoPlayInterval = setInterval(nextSlide, 3000); 
+        }
     }
 
     function stopAutoPlay() {
@@ -433,8 +423,18 @@
     }
 
     // Pausar autoplay al hacer hover sobre la imagen
-    document.getElementById('carousel-track').parentElement.addEventListener('mouseenter', stopAutoPlay);
-    document.getElementById('carousel-track').parentElement.addEventListener('mouseleave', startAutoPlay);
+    const trackContainer = document.getElementById('carousel-track');
+    if(trackContainer) {
+        trackContainer.parentElement.addEventListener('mouseenter', stopAutoPlay);
+        trackContainer.parentElement.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // Event Listeners para cerrar modal clickeando afuera
+    if(modal) {
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeModal();
+        });
+    }
 
     // Inicializar
     renderProjects();

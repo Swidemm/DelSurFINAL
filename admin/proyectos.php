@@ -37,9 +37,10 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
                 </div>
                 <div class="space-y-4">
                     <div class="border-2 border-dashed border-slate-300 rounded p-6 text-center hover:bg-slate-50 cursor-pointer relative">
-                        <input type="file" name="imagen" required accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="preview(this)">
-                        <div id="prevArea" class="text-slate-400 text-sm">
-                            <i class="ph ph-image text-2xl"></i><br>Click para subir foto
+                        <input type="file" name="imagenes[]" multiple required accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewFiles(this)">
+                        <div id="prevArea" class="text-slate-400 text-sm pointer-events-none">
+                            <i class="ph ph-images text-2xl"></i><br>
+                            <span id="fileLabel">Elegí una o varias fotos</span>
                         </div>
                     </div>
                     <button type="submit" id="btnSave" class="w-full bg-orange-600 text-white font-bold py-2 rounded hover:bg-orange-700 transition">Publicar Proyecto</button>
@@ -48,10 +49,19 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-            <?php foreach($proyectos as $p): ?>
+            <?php foreach($proyectos as $p): 
+                // Detectar si es array de imagenes o string viejo
+                $imgPortada = is_array($p['imagenes']) ? $p['imagenes'][0] : $p['imagenes'];
+                $cantFotos = is_array($p['imagenes']) ? count($p['imagenes']) : 1;
+            ?>
             <div class="bg-white rounded-xl shadow-sm overflow-hidden group border border-slate-200 relative">
-                <div class="h-48 overflow-hidden">
-                    <img src="../<?php echo htmlspecialchars($p['imagen']); ?>" class="w-full h-full object-cover">
+                <div class="h-48 overflow-hidden relative">
+                    <img src="../<?php echo htmlspecialchars($imgPortada); ?>" class="w-full h-full object-cover">
+                    <?php if($cantFotos > 1): ?>
+                        <span class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                            <i class="ph ph-images"></i> +<?php echo $cantFotos - 1; ?>
+                        </span>
+                    <?php endif; ?>
                 </div>
                 <button onclick="borrar('<?php echo $p['id']; ?>')" class="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full shadow hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity">
                     <i class="ph ph-trash"></i>
@@ -68,13 +78,15 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
     </div>
 
     <script>
-    function preview(input) {
-        if(input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => document.getElementById('prevArea').innerHTML = `<img src="${e.target.result}" class="h-20 mx-auto rounded">`;
-            reader.readAsDataURL(input.files[0]);
+    function previewFiles(input) {
+        const count = input.files.length;
+        const label = document.getElementById('fileLabel');
+        if(count > 0) {
+            label.innerText = `${count} foto(s) seleccionada(s)`;
+            label.className = "text-orange-600 font-bold";
         }
     }
+
     document.getElementById('formProyecto').addEventListener('submit', async e => {
         e.preventDefault();
         const btn = document.getElementById('btnSave');
@@ -90,6 +102,7 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         } catch(err) { alert('Error de conexión'); }
         btn.disabled = false; btn.innerText = 'Publicar Proyecto';
     });
+
     async function borrar(id) {
         if(!confirm('¿Borrar este proyecto?')) return;
         const fd = new FormData(); fd.append('accion','eliminar'); fd.append('id', id);
