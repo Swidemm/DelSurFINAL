@@ -133,7 +133,7 @@
           <p>Este sitio puede utilizar cookies propias y de terceros para mejorar la experiencia de navegación y analizar el tráfico. Al continuar navegando, usted acepta su uso.</p>
 
           <h3>5. Contacto Legal</h3>
-          <p>Para consultas sobre estos términos, puede escribirnos a lauti.seid@gmail.com.</p>
+          <p>Para consultas sobre estos términos, puede escribirnos a delsur.constr@gmail.com.</p>
       </section>
 
   </main>
