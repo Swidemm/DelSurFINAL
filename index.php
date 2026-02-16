@@ -1,19 +1,3 @@
-<?php
-// index.php - Del Sur Construcciones
-// Carga de proyectos para la sección dinámica
-$jsonFile = 'proyectos.json';
-$proyectosTodo = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
-
-// Filtramos solo los marcados con la estrella (destacados)
-$proyectosHome = array_filter($proyectosTodo, function($p) {
-    return isset($p['destacado']) && $p['destacado'] === true;
-});
-
-// Si no hay ninguno marcado, mostramos los últimos 3 por defecto
-if (empty($proyectosHome)) {
-    $proyectosHome = array_slice($proyectosTodo, 0, 3);
-}
-?>
 <!doctype html>
 <html lang="es-AR" class="scroll-smooth">
 <head>
@@ -55,8 +39,10 @@ if (empty($proyectosHome)) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   
+  <link rel="stylesheet" href="./css/styles.css" />
+
   <style>
-    /* ANIMACIÓN DE CARGA */
+    /* 1. ANIMACIÓN DE CARGA */
     @keyframes loading {
         0% { transform: translateX(-100%); }
         50% { transform: translateX(0); }
@@ -64,7 +50,7 @@ if (empty($proyectosHome)) {
     }
     #preloader { transition: opacity 0.6s ease-out, visibility 0.6s; }
 
-    /* TEXTO BRILLANTE (SHINE) */
+    /* 2. TEXTO BRILLANTE (SHINE) */
     @keyframes textShine {
         0% { background-position: 0% 50%; }
         100% { background-position: 200% 50%; }
@@ -74,7 +60,7 @@ if (empty($proyectosHome)) {
         animation: textShine 4s linear infinite;
     }
 
-    /* FONDO VIENTO (WIND) */
+    /* 3. FONDO VIENTO (WIND) */
     @keyframes windDrift {
         from { background-position: 0px 0px; }
         to { background-position: 1000px 500px; }
@@ -85,7 +71,7 @@ if (empty($proyectosHome)) {
         transition: transform 0.1s ease-out; 
     }
 
-    /* UTILS */
+    /* 4. UTILS */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -134,14 +120,14 @@ if (empty($proyectosHome)) {
   <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm" id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-24">
+        
         <a href="#inicio" class="flex-shrink-0 group">
           <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-16 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
 
         <div class="hidden md:flex items-center space-x-6">
           <a href="#servicios" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Servicios</a>
-          <a href="proceso.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Cómo Trabajamos</a> 
-          <a href="pagos.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Precios</a>
+          <a href="proceso.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Cómo Trabajamos</a> <a href="pagos.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Precios</a>
           
           <a href="planificador.php" class="text-sm font-bold text-delsur-blue hover:text-delsur-orange transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -163,8 +149,7 @@ if (empty($proyectosHome)) {
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
         <div class="px-4 pt-2 pb-6 space-y-2">
             <a href="#servicios" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Servicios</a>
-            <a href="proceso.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Cómo Trabajamos</a> 
-            <a href="pagos.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Planes y Precios</a>
+            <a href="proceso.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Cómo Trabajamos</a> <a href="pagos.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Planes y Precios</a>
             <a href="planificador.php" class="block py-3 text-delsur-blue font-bold border-b border-slate-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 Ingresar al Planificador
@@ -263,6 +248,73 @@ if (empty($proyectosHome)) {
     </div>
   </section>
 
+  <section id="proceso" class="py-24 bg-delsur-light border-y border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="reveal">
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-delsur-blue mb-6">Claridad ante todo</h2>
+            <p class="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">
+                Sabemos que una obra puede generar incertidumbre. Por eso, diseñamos un método transparente de 5 pasos para que sepas qué pasa en cada momento.
+            </p>
+            
+            <a href="proceso.php" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-delsur-orange font-bold rounded-xl shadow-lg border border-slate-100 hover:scale-105 transition-transform group">
+                Ver el paso a paso interactivo
+                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+            
+            <div class="mt-8 flex justify-center gap-8 opacity-50">
+                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
+                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
+                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-gradient-to-br from-delsur-dark via-delsur-blue to-slate-900 text-white relative overflow-hidden">
+     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgNjBMMjAgNDBNNDAgMjBMNjAgME0wIDIwTDIwIDBNMjAgNjBMNDAgNDBNNDAgNjBMNjAgNDAiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIi8+PC9zdmc+')] opacity-20"></div>
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+         <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-delsur-orange/30 text-delsur-orange text-xs font-bold uppercase tracking-wider mb-4">
+                Comenzá con el pie derecho
+             </div>
+             <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Asesoría Profesional</h2>
+             <p class="text-blue-100 text-lg">
+                Antes de iniciar la obra, despejá todas tus dudas con un experto. Elegí el plan que mejor se adapte a tus necesidades.
+             </p>
+         </div>
+
+         <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+             <div class="glass-panel p-8 rounded-2xl border-t border-white/10 reveal delay-100 hover:bg-white/5 transition-colors">
+                 <h3 class="text-xl font-bold text-slate-300 mb-2">Asesoría General</h3>
+                 <div class="flex items-baseline gap-2 mb-6">
+                     <span class="text-4xl font-bold text-white">$3.500</span>
+                 </div>
+                 <p class="text-sm text-slate-400 mb-8 h-10">Ideal para consultas puntuales, viabilidad de terreno y estimación de costos.</p>
+                 <ul class="space-y-4 mb-8 text-sm text-slate-300">
+                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Reunión técnica 1 a 1</span></li>
+                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Presupuesto estimado de obra</span></li>
+                     <li class="flex items-center gap-3 opacity-50"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="line-through">Licencia de Software 2D</span></li>
+                 </ul>
+                 <a href="pagos.php" class="block w-full py-3 rounded-xl border border-white/20 text-center font-bold hover:bg-white hover:text-delsur-blue transition-all">Ver detalle</a>
+             </div>
+             <div class="glass-panel p-8 rounded-2xl border border-delsur-orange/50 bg-delsur-orange/5 reveal delay-200 relative transform hover:-translate-y-2 transition-transform">
+                 <div class="absolute top-0 right-0 bg-delsur-orange text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RECOMENDADO</div>
+                 <h3 class="text-xl font-bold text-orange-300 mb-2">Pack Premium</h3>
+                 <div class="flex items-baseline gap-2 mb-6">
+                     <span class="text-4xl font-bold text-white">$4.500</span>
+                 </div>
+                 <p class="text-sm text-blue-100 mb-8 h-10">La experiencia completa: Asesoría experta + Herramientas de diseño.</p>
+                 <ul class="space-y-4 mb-8 text-sm text-white">
+                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Todo lo incluido en Asesoría</span></li>
+                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span class="font-bold">Licencia Planificador 2D</span></li>
+                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Prioridad en agenda</span></li>
+                 </ul>
+                 <a href="pagos.php" class="block w-full py-3 rounded-xl bg-delsur-orange text-white text-center font-bold hover:bg-orange-600 transition-all shadow-glow animate-pulse-fast">CONTRATAR PACK</a>
+             </div>
+         </div>
+     </div>
+  </section>
+
   <section id="proyectos" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-end mb-12 reveal">
@@ -272,24 +324,19 @@ if (empty($proyectosHome)) {
         </div>
         <a href="proyectos.php" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
       </div>
-
       <div class="grid md:grid-cols-3 gap-8">
-        <?php foreach($proyectosHome as $index => $ph): 
-            $imgHome = is_array($ph['imagenes']) ? $ph['imagenes'][0] : $ph['imagenes'];
-            $delay = ($index + 1) * 100;
-        ?>
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-<?php echo $delay; ?> relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72">
-            <img src="./<?php echo htmlspecialchars($imgHome); ?>" alt="<?php echo htmlspecialchars($ph['titulo']); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-          </div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform">
-            <h3 class="text-xl font-bold"><?php echo htmlspecialchars($ph['titulo']); ?></h3>
-            <p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                <?php echo htmlspecialchars($ph['categoria']); ?> • <?php echo htmlspecialchars($ph['medidas']); ?>
-            </p>
-          </div>
+        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-100 relative shadow-md hover:shadow-xl transition-all">
+          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-1.webp" alt="Casa Moderna" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Residencia Los Álamos</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Obra llave en mano • 240m²</p></div>
         </div>
-        <?php endforeach; ?>
+        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-200 relative shadow-md hover:shadow-xl transition-all">
+          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-2.webp" alt="Oficinas" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Oficinas Tech Center</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Remodelación Comercial • 500m²</p></div>
+        </div>
+        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-300 relative shadow-md hover:shadow-xl transition-all">
+          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-3.webp" alt="Reforma" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Renovación Palermo</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Diseño Interior y Fachada</p></div>
+        </div>
       </div>
     </div>
   </section>
@@ -384,7 +431,7 @@ if (empty($proyectosHome)) {
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 1. PRELOADER
+    // 1. PRELOADER (2 segundos)
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('preloader');
@@ -392,7 +439,7 @@ if (empty($proyectosHome)) {
         }, 2000);
     });
 
-    // 2. EFECTO PARALLAX HERO
+    // 2. EFECTO PARALLAX
     const heroSection = document.getElementById('inicio');
     const heroPattern = document.getElementById('hero-pattern');
     if (heroSection && heroPattern) {
@@ -420,13 +467,11 @@ if (empty($proyectosHome)) {
     const mobileMenu = document.getElementById('mobileMenu');
     mobileBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
 
-    // Animaciones al hacer scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Formulario de Contacto
     const contactForm = document.getElementById('contactForm');
     const formMessage = document.getElementById('formMessage');
     contactForm.addEventListener('submit', async (e) => {
@@ -458,7 +503,6 @@ if (empty($proyectosHome)) {
         }
     });
 
-    // Nav Sticky
     window.addEventListener('scroll', () => {
         const nav = document.getElementById('navbar');
         if (window.scrollY > 50) {
