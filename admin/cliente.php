@@ -22,9 +22,8 @@ foreach ($contacts as $c) {
 
 if (!$cliente) { echo "Cliente no encontrado."; exit; }
 
-// Preparar historial de notas (compatibilidad con versiones anteriores)
+// Preparar historial de notas
 $historial = $cliente['historial_notas'] ?? [];
-// Si no hay historial pero hay nota vieja, la mostramos
 if (empty($historial) && !empty($cliente['notas'])) {
     $historial[] = ['fecha' => 'Nota anterior', 'texto' => $cliente['notas']];
 }
@@ -106,28 +105,39 @@ if (empty($historial) && !empty($cliente['notas'])) {
             <form id="formGestion">
                 <input type="hidden" name="id" value="<?php echo $cliente['id']; ?>">
                 
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estado</label>
-                        <select name="estado" class="w-full border border-slate-300 rounded p-2 bg-white text-sm focus:ring-2 focus:ring-orange-500 outline-none">
-                            <?php $st = $cliente['estado'] ?? 'Nuevo'; ?>
-                            <option value="Nuevo" <?php echo $st=='Nuevo'?'selected':''; ?>>✨ Nuevo</option>
-                            <option value="Contactado" <?php echo $st=='Contactado'?'selected':''; ?>>📞 Contactado</option>
-                            <option value="Presupuestado" <?php echo $st=='Presupuestado'?'selected':''; ?>>📄 Presupuesto</option>
-                            <option value="En Negociación" <?php echo $st=='En Negociación'?'selected':''; ?>>🤝 En Negociación</option>
-                            <option value="Ganado" <?php echo $st=='Ganado'?'selected':''; ?>>✅ Venta Cerrada</option>
-                            <option value="Perdido" <?php echo $st=='Perdido'?'selected':''; ?>>❌ Perdido</option>
-                        </select>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-6 relative">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estado</label>
+                            <select name="estado" onchange="autoSave()" class="w-full border border-slate-300 rounded p-2 bg-white text-sm focus:ring-2 focus:ring-orange-500 outline-none cursor-pointer hover:bg-slate-50 transition">
+                                <?php $st = $cliente['estado'] ?? 'Nuevo'; ?>
+                                <option value="Nuevo" <?php echo $st=='Nuevo'?'selected':''; ?>>✨ Nuevo</option>
+                                <option value="Contactado" <?php echo $st=='Contactado'?'selected':''; ?>>📞 Contactado</option>
+                                <option value="Presupuestado" <?php echo $st=='Presupuestado'?'selected':''; ?>>📄 Presupuesto</option>
+                                <option value="En Negociación" <?php echo $st=='En Negociación'?'selected':''; ?>>🤝 En Negociación</option>
+                                <option value="Ganado" <?php echo $st=='Ganado'?'selected':''; ?>>✅ Venta Cerrada</option>
+                                <option value="Perdido" <?php echo $st=='Perdido'?'selected':''; ?>>❌ Perdido</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Pago</label>
+                            <select name="pago" onchange="autoSave()" class="w-full border border-slate-300 rounded p-2 bg-white text-sm focus:ring-2 focus:ring-orange-500 outline-none cursor-pointer hover:bg-slate-50 transition">
+                                <?php $pg = $cliente['pago'] ?? 'N/A'; ?>
+                                <option value="N/A" <?php echo $pg=='N/A'?'selected':''; ?>>N/A</option>
+                                <option value="Pendiente" <?php echo $pg=='Pendiente'?'selected':''; ?>>⏳ Pendiente</option>
+                                <option value="Seña" <?php echo $pg=='Seña'?'selected':''; ?>>💳 Seña</option>
+                                <option value="Total" <?php echo $pg=='Total'?'selected':''; ?>>💰 Pagado</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Pago</label>
-                        <select name="pago" class="w-full border border-slate-300 rounded p-2 bg-white text-sm focus:ring-2 focus:ring-orange-500 outline-none">
-                            <?php $pg = $cliente['pago'] ?? 'N/A'; ?>
-                            <option value="N/A" <?php echo $pg=='N/A'?'selected':''; ?>>N/A</option>
-                            <option value="Pendiente" <?php echo $pg=='Pendiente'?'selected':''; ?>>⏳ Pendiente</option>
-                            <option value="Seña" <?php echo $pg=='Seña'?'selected':''; ?>>💳 Seña</option>
-                            <option value="Total" <?php echo $pg=='Total'?'selected':''; ?>>💰 Pagado</option>
-                        </select>
+                    
+                    <div class="mt-4 flex justify-between items-center border-t border-slate-100 pt-3">
+                        <span id="saveStatus" class="text-xs font-bold text-slate-400 flex items-center gap-1 opacity-0 transition-opacity duration-500">
+                            <i class="ph ph-check-circle text-green-500 text-lg"></i> Guardado automáticamente
+                        </span>
+                        <button type="button" onclick="submitForm(false)" class="text-xs bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700 transition flex items-center gap-2">
+                            <i class="ph ph-floppy-disk"></i> Guardar Cambios
+                        </button>
                     </div>
                 </div>
 
@@ -139,7 +149,7 @@ if (empty($historial) && !empty($cliente['notas'])) {
                     <div class="p-5">
                         <div class="flex gap-2 mb-6">
                             <input type="text" name="nueva_nota" id="inputNota" class="flex-1 border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Escribí una nueva observación..." autocomplete="off">
-                            <button type="submit" id="btnGuardar" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-700 transition shadow-sm">
+                            <button type="submit" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-700 transition shadow-sm">
                                 <i class="ph ph-paper-plane-right"></i>
                             </button>
                         </div>
@@ -149,14 +159,13 @@ if (empty($historial) && !empty($cliente['notas'])) {
                                 <p class="text-center text-slate-400 text-sm py-4">No hay notas registradas.</p>
                             <?php else: ?>
                                 <?php foreach($historial as $nota): ?>
-                                <div class="flex gap-3 items-start">
+                                <div class="flex gap-3 items-start animate-fade-in">
                                     <div class="mt-1 w-2 h-2 rounded-full bg-orange-300 shrink-0"></div>
                                     <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex-1">
                                         <p class="text-slate-700 text-sm"><?php echo nl2br(htmlspecialchars($nota['texto'])); ?></p>
                                         <p class="text-xs text-slate-400 mt-1 text-right">
                                             <?php 
                                                 $fecha = $nota['fecha'];
-                                                // Intentar formatear fecha si es válida
                                                 echo (strtotime($fecha) ? date('d/m/Y H:i', strtotime($fecha)) : $fecha); 
                                             ?>
                                         </p>
@@ -173,16 +182,12 @@ if (empty($historial) && !empty($cliente['notas'])) {
     </div>
 
     <script>
-        document.getElementById('formGestion').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnGuardar');
-            const icon = btn.innerHTML;
-            
-            // Animación simple de carga
-            btn.disabled = true;
-            btn.innerHTML = '<i class="ph ph-spinner animate-spin"></i>';
+        const form = document.getElementById('formGestion');
+        const statusLabel = document.getElementById('saveStatus');
 
-            const formData = new FormData(e.target);
+        // Función principal de envío
+        async function submitForm(isNote = false) {
+            const formData = new FormData(form);
             formData.append('accion', 'actualizar');
 
             try {
@@ -190,19 +195,44 @@ if (empty($historial) && !empty($cliente['notas'])) {
                 const data = await res.json();
                 
                 if (data.success) {
-                    // Si escribió nota, limpiamos el input para que no la mande de nuevo
-                    document.getElementById('inputNota').value = '';
-                    // Recargamos la página para ver la nota nueva en la lista
-                    window.location.reload(); 
+                    if (isNote) {
+                        // Si era una nota, limpiamos input y recargamos para verla
+                        document.getElementById('inputNota').value = '';
+                        window.location.reload(); 
+                    } else {
+                        // Si fue solo estado, mostramos feedback visual
+                        showSavedFeedback();
+                    }
                 } else {
                     alert('Error: ' + data.error);
-                    btn.innerHTML = icon;
-                    btn.disabled = false;
                 }
             } catch (err) {
-                alert('Error de conexión');
-                btn.innerHTML = icon;
-                btn.disabled = false;
+                console.error(err);
+            }
+        }
+
+        // Auto-Save al cambiar select
+        function autoSave() {
+            submitForm(false);
+        }
+
+        // Feedback visual "Guardado"
+        function showSavedFeedback() {
+            statusLabel.classList.remove('opacity-0');
+            setTimeout(() => {
+                statusLabel.classList.add('opacity-0');
+            }, 2000);
+        }
+
+        // Interceptar envío del formulario (Enter o botón avión)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Solo recargamos si hay texto en la nota
+            const nota = document.getElementById('inputNota').value.trim();
+            if(nota) {
+                submitForm(true); // Es nota
+            } else {
+                submitForm(false); // Es solo guardar cambios manual
             }
         });
 
