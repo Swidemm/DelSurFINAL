@@ -183,15 +183,20 @@
     });
 
     // ----------------------------
-    // LOGICA DE PÁGINA EXISTENTE
+    // LOGICA DE PÁGINA
     // ----------------------------
 
     // 1. Configurar Referencia
     const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get('ref');
-    if(ref) {
-        document.getElementById('projectTitle').textContent = `Cotizar similar a: "${ref}"`;
-        document.getElementById('refProject').value = ref;
+    const ref = urlParams.get('ref_proyecto'); // Ahora buscamos 'ref_proyecto' (estándar con projects.php)
+    // Si viene 'ref' (antiguo), también lo agarramos
+    const refOld = urlParams.get('ref');
+    
+    const finalRef = ref || refOld;
+
+    if(finalRef) {
+        document.getElementById('projectTitle').textContent = `Cotizar similar a: "${decodeURIComponent(finalRef)}"`;
+        document.getElementById('refProject').value = finalRef;
     }
 
     // 2. Manejo del Formulario
@@ -209,17 +214,22 @@
         btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Enviando...';
 
         const data = new FormData(form);
+        
+        // Armamos el payload compatible con el Panel Admin
         const payload = {
-            ref: data.get('ref_proyecto'),
+            origen: 'Cotizador', // Etiqueta para el admin
+            ref_proyecto: data.get('ref_proyecto'),
             nombre: data.get('nombre'),
-            contacto: data.get('contacto'),
+            telefono: data.get('contacto'), // Mapeamos 'contacto' a 'telefono'
             estructura: data.get('estructura'),
-            zona: data.get('zona')
+            zona: data.get('zona'),
+            // Mensaje resumen para lectura rápida en Admin
+            mensaje: `Interesado en similar a: ${data.get('ref_proyecto') || 'General'}. Estructura: ${data.get('estructura')}. Zona: ${data.get('zona')}.`
         };
 
         try {
-            // Guardamos en similar.json usando save_similar.php
-            const res = await fetch('save_similar.php', {
+            // ENVIAMOS A LA NUEVA API (api/contact.php)
+            const res = await fetch('api/contact.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -234,13 +244,13 @@
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 1000);
             } else {
-                alert("Hubo un error al enviar. Intenta de nuevo.");
+                alert("Hubo un error al enviar. Por favor intentá de nuevo.");
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
         } catch (err) {
             console.error(err);
-            alert("Error de conexión.");
+            alert("Error de conexión. Verificá tu internet.");
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
