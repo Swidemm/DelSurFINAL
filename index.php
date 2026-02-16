@@ -1,3 +1,18 @@
+<?php
+// Carga de proyectos para el carrusel/rejilla dinámica
+$jsonFile = 'proyectos.json';
+$proyectosTodo = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
+
+// Filtramos por la estrella del Admin
+$proyectosHome = array_filter($proyectosTodo, function($p) {
+    return isset($p['destacado']) && $p['destacado'] === true;
+});
+
+// Fallback: si no hay nada marcado, mostramos los últimos 3
+if (empty($proyectosHome)) {
+    $proyectosHome = array_slice($proyectosTodo, 0, 3);
+}
+?>
 <!doctype html>
 <html lang="es-AR" class="scroll-smooth">
 <head>
@@ -324,19 +339,24 @@
         </div>
         <a href="proyectos.php" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
       </div>
+
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-100 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-1.webp" alt="Casa Moderna" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Residencia Los Álamos</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Obra llave en mano • 240m²</p></div>
+        <?php foreach($proyectosHome as $index => $ph): 
+            $imgHome = is_array($ph['imagenes']) ? $ph['imagenes'][0] : $ph['imagenes'];
+            $delay = ($index + 1) * 100;
+        ?>
+        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-<?php echo $delay; ?> relative shadow-md hover:shadow-xl transition-all">
+          <div class="overflow-hidden h-72">
+            <img src="./<?php echo htmlspecialchars($imgHome); ?>" alt="<?php echo htmlspecialchars($ph['titulo']); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          </div>
+          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+            <h3 class="text-xl font-bold"><?php echo htmlspecialchars($ph['titulo']); ?></h3>
+            <p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                <?php echo htmlspecialchars($ph['categoria']); ?> • <?php echo htmlspecialchars($ph['medidas']); ?>
+            </p>
+          </div>
         </div>
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-200 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-2.webp" alt="Oficinas" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Oficinas Tech Center</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Remodelación Comercial • 500m²</p></div>
-        </div>
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-300 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-3.webp" alt="Reforma" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Renovación Palermo</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Diseño Interior y Fachada</p></div>
-        </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </section>
@@ -431,7 +451,7 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 1. PRELOADER (2 segundos)
+    // 1. PRELOADER
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('preloader');
@@ -487,11 +507,7 @@
             honeypot: data.get('honeypot')
         };
         try {
-            const res = await fetch('api/contact.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const res = await fetch('api/contact.php', {\n                method: 'POST',\n                headers: { 'Content-Type': 'application/json' },\n                body: JSON.stringify(payload),\n            });
             if (res.ok) {
                 formMessage.textContent = '¡Mensaje enviado con éxito!';
                 formMessage.className = 'text-center text-sm font-bold mt-2 text-green-600';
