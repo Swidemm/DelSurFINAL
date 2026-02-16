@@ -24,6 +24,7 @@
   </script>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   
   <style>
       /* Preloader */
@@ -48,7 +49,7 @@
           overflow: hidden;
       }
       
-      /* --- PARCHE DE SEGURIDAD PARA IMÁGENES --- */
+      /* Parche de seguridad para imágenes */
       .img-wrapper {
           position: relative;
           width: 100%;
@@ -61,9 +62,8 @@
           left: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover; /* Resizear a los bordes sin deformar */
+          object-fit: cover;
       }
-      /* ----------------------------------------- */
 
       @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
@@ -71,6 +71,25 @@
       }
       .animate-fade-in-up {
           animation: fadeInUp 0.6s ease-out forwards;
+      }
+
+      /* Visualizador de Imagen Pantalla Completa */
+      #zoom-overlay {
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.95);
+          z-index: 150;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          backdrop-filter: blur(5px);
+      }
+      #zoom-img {
+          max-width: 95vw;
+          max-height: 90vh;
+          object-fit: contain; /* Esto asegura que la imagen sea "encajonada" */
+          box-shadow: 0 0 50px rgba(0,0,0,0.5);
       }
   </style>
 </head>
@@ -83,6 +102,14 @@
             <div class="h-full bg-delsur-orange w-full absolute top-0 left-0 animate-[loading_1.5s_infinite_linear]"></div>
         </div>
     </div>
+  </div>
+
+  <div id="zoom-overlay" onclick="closeZoom()">
+      <button class="absolute top-6 right-6 text-white text-4xl hover:text-delsur-orange transition-colors">
+          <i class="ph ph-x"></i>
+      </button>
+      <img id="zoom-img" src="" alt="Zoom" onclick="event.stopPropagation()">
+      <p class="absolute bottom-6 text-slate-400 text-sm font-medium">Click afuera para cerrar</p>
   </div>
 
   <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-200">
@@ -100,11 +127,6 @@
             Pedir Presupuesto
           </a>
         </div>
-        <button class="md:hidden text-slate-600 focus:outline-none p-2">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
       </div>
     </div>
   </nav>
@@ -116,7 +138,7 @@
               Nuestras Obras
           </h1>
           <p class="text-slate-500 max-w-2xl mx-auto text-lg animate-fade-in-up" style="animation-delay: 200ms">
-              Explorá nuestra galería de proyectos recientes. Desde viviendas unifamiliares hasta locales comerciales y reformas integrales.
+              Explorá nuestra galería de proyectos recientes.
           </p>
       </div>
   </header>
@@ -130,7 +152,6 @@
               <button onclick="filterProjects('refacción')" class="filter-btn px-6 py-2 rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition-all font-medium" data-category="refacción">Refacción</button>
               <button onclick="filterProjects('industrial')" class="filter-btn px-6 py-2 rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition-all font-medium" data-category="industrial">Industrial</button>
           </div>
-
           <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
   </section>
@@ -146,6 +167,11 @@
 
               <div class="w-full md:w-3/5 bg-slate-900 relative group h-72 md:h-auto overflow-hidden">
                   <div class="absolute inset-0 flex transition-transform duration-500 ease-out" id="carousel-track"></div>
+                  
+                  <button onclick="openZoom()" class="absolute bottom-6 right-6 z-20 bg-white/20 hover:bg-white/40 p-3 rounded-full text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all shadow-xl">
+                      <i class="ph ph-magnifying-glass-plus text-2xl"></i>
+                  </button>
+
                   <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-10" id="carousel-dots"></div>
                   <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 p-3 rounded-full text-white backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
                       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
@@ -157,7 +183,7 @@
 
               <div class="w-full md:w-2/5 p-8 md:p-10 overflow-y-auto bg-white flex flex-col h-full">
                   <div class="mb-6">
-                      <span id="modal-category" class="inline-block px-3 py-1 bg-orange-50 text-delsur-orange text-xs font-bold uppercase tracking-wider rounded-full mb-3">Vivienda</span>
+                      <span id="modal-category" class="inline-block px-3 py-1 bg-orange-50 text-delsur-orange text-xs font-bold uppercase tracking-wider rounded-full mb-3"></span>
                       <h2 id="modal-title" class="text-3xl font-display font-bold text-delsur-blue leading-tight mb-4"></h2>
                       <p id="modal-desc" class="text-slate-600 text-sm leading-relaxed"></p>
                   </div>
@@ -182,7 +208,7 @@
   </div>
 
   <footer class="bg-delsur-dark text-slate-400 text-sm py-8 text-center border-t border-slate-800">
-      <div class="max-w-7xl mx-auto px-4"><p>© 2024 Del Sur Construcciones.</p></div>
+      <div class="max-w-7xl mx-auto px-4"><p>© 2024 Del Sur Construcciones. Todos los derechos reservados.</p></div>
   </footer>
 
   <script>
@@ -217,11 +243,7 @@
         };
     });
 
-    if (projects.length === 0) {
-        projects.push({id:'demo', title:'Proyecto Ejemplo', category:'vivienda', size:'150m²', location:'Admin', year:'2026', description:'Cargá proyectos desde el panel.', featuresTitle:'Info', features:['Admin'], images:['./imagenes/logo.webp']});
-    }
-
-    // RENDERIZADO GRID BLINDADO
+    // RENDERIZADO GRID
     function renderProjects(filter = 'all') {
         const grid = document.getElementById('projects-grid');
         grid.innerHTML = '';
@@ -235,7 +257,7 @@
 
             card.innerHTML = `
                 <div class="img-wrapper h-64">
-                    <img src="${p.images[0]}" alt="${p.title}" class="transition-transform duration-700 group-hover:scale-110">
+                    <img src="${p.images[0]}" alt="${p.title}" class="transition-transform duration-700 group-hover:scale-110" loading="lazy">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
                 </div>
                 <div class="p-6 flex-grow flex flex-col">
@@ -287,6 +309,27 @@
             modalContent.classList.remove('modal-enter');
             modalContent.classList.add('modal-enter-active');
         }, 10);
+        startAutoPlay();
+    }
+
+    // LÓGICA DE ZOOM / FULLSCREEN
+    function openZoom() {
+        if(!currentProject) return;
+        const currentImgSrc = currentProject.images[currentSlide];
+        const zoomOverlay = document.getElementById('zoom-overlay');
+        const zoomImg = document.getElementById('zoom-img');
+        
+        zoomImg.src = currentImgSrc;
+        zoomOverlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        stopAutoPlay();
+    }
+
+    function closeZoom() {
+        document.getElementById('zoom-overlay').style.display = 'none';
+        if (!document.body.classList.contains('modal-open')) {
+            document.body.style.overflow = 'auto';
+        }
         startAutoPlay();
     }
 
