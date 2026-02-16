@@ -10,7 +10,7 @@ $totalLeads = 0;
 if (file_exists($contactsFile)) {
     $data = json_decode(file_get_contents($contactsFile), true);
     if (is_array($data)) {
-        $leads = array_slice($data, 0, 5); // Solo los últimos 5
+        $leads = array_slice($data, 0, 10); // Muestro los últimos 10 para que veas más historial
         $totalLeads = count($data);
     }
 }
@@ -41,6 +41,7 @@ if (file_exists($contactsFile)) {
                 </div>
                 <i class="ph ph-users text-4xl text-blue-100"></i>
             </div>
+            
             <a href="proyectos.php" class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500 flex justify-between items-center hover:bg-orange-50 transition cursor-pointer group">
                 <div>
                     <p class="text-slate-500 text-sm uppercase font-bold group-hover:text-orange-600">Gestionar Proyectos</p>
@@ -62,15 +63,16 @@ if (file_exists($contactsFile)) {
                             <th class="px-6 py-3">Origen</th>
                             <th class="px-6 py-3">Mensaje / Detalle</th>
                             <th class="px-6 py-3">Fecha</th>
+                            <th class="px-6 py-3 text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <?php if (empty($leads)): ?>
-                            <tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No hay contactos todavía.</td></tr>
+                            <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay contactos todavía.</td></tr>
                         <?php else: ?>
                             <?php foreach ($leads as $l): ?>
-                            <tr class="hover:bg-slate-50">
-                                <td class="px-6 py-3 font-medium"><?php echo htmlspecialchars($l['nombre'] ?? '-'); ?></td>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-3 font-medium text-slate-900"><?php echo htmlspecialchars($l['nombre'] ?? '-'); ?></td>
                                 <td class="px-6 py-3">
                                     <span class="px-2 py-1 rounded-full text-xs font-bold <?php echo ($l['origen']??'')=='Cotizador' ? 'bg-purple-100 text-purple-700':'bg-blue-100 text-blue-700'; ?>">
                                         <?php echo htmlspecialchars($l['origen'] ?? 'Web'); ?>
@@ -81,6 +83,18 @@ if (file_exists($contactsFile)) {
                                 </td>
                                 <td class="px-6 py-3 text-slate-400">
                                     <?php echo date('d/m H:i', strtotime($l['fecha_registro'] ?? $l['date'] ?? 'now')); ?>
+                                </td>
+                                
+                                <td class="px-6 py-3 text-right flex items-center justify-end gap-2">
+                                    <?php if(isset($l['estado']) && $l['estado'] != 'Nuevo'): ?>
+                                        <span class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-100 whitespace-nowrap">
+                                            <?php echo htmlspecialchars($l['estado']); ?>
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <a href="cliente.php?id=<?php echo $l['id'] ?? ''; ?>" class="text-slate-500 hover:text-orange-600 bg-white border border-slate-200 hover:border-orange-300 p-2 rounded-lg transition shadow-sm" title="Gestionar Cliente">
+                                        <i class="ph ph-pencil-simple text-lg"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
