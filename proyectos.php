@@ -1,444 +1,222 @@
-<!doctype html>
-<html lang="es-AR" class="scroll-smooth">
+<?php
+// admin/proyectos.php
+require_once 'auth.php';
+requireLogin();
+
+$jsonFile = '../proyectos.json';
+$proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
+?>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nuestros Proyectos — Del Sur Construcciones</title>
-  <meta name="theme-color" content="#1e2952" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            delsur: { blue: '#1e2952', dark: '#0f172a', orange: '#f97316', light: '#f8fafc' }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            display: ['Montserrat', 'system-ui', 'sans-serif'],
-          }
-        }
-      }
-    };
-  </script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
-  
-  <style>
-      /* Preloader */
-      @keyframes loading {
-        0% { transform: translateX(-100%); }
-        50% { transform: translateX(0); }
-        100% { transform: translateX(100%); }
-      }
-      #preloader { transition: opacity 0.6s ease-out, visibility 0.6s; }
-
-      /* Animaciones del Modal */
-      .modal-enter { opacity: 0; transform: scale(0.95); }
-      .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
-      .modal-exit { opacity: 1; transform: scale(1); }
-      .modal-exit-active { opacity: 0; transform: scale(0.95); transition: all 0.2s ease-in; }
-      body.modal-open { overflow: hidden; }
-      .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
-      .carousel-slide { min-width: 100%; height: 100%; object-fit: cover; }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Gestionar Proyectos - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
-
-<body class="bg-slate-50 font-sans text-slate-700">
-
-  <div id="preloader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center">
-    <div class="flex flex-col items-center gap-6">
-        <img src="./imagenes/logo.webp" alt="Cargando..." class="h-20 w-auto animate-pulse" />
-        <div class="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden relative">
-            <div class="h-full bg-delsur-orange w-full absolute top-0 left-0 animate-[loading_1.5s_infinite_linear]"></div>
+<body class="bg-slate-100 text-slate-800 font-sans pb-20">
+    <nav class="bg-slate-900 text-white p-4 mb-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="font-bold text-lg">Mis Proyectos</h1>
+            <a href="index.php" class="text-sm text-slate-300 hover:text-white flex items-center gap-1"><i class="ph ph-arrow-left"></i> Volver</a>
         </div>
-    </div>
-  </div>
+    </nav>
 
-  <nav class="bg-white border-b border-slate-200 py-4 sticky top-0 z-40 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-        <a href="index.php" class="flex-shrink-0">
-            <img src="./imagenes/logo.webp" alt="Del Sur" class="h-10 w-auto" />
-        </a>
-        <a href="index.php" class="text-sm font-bold text-slate-500 hover:text-delsur-blue flex items-center gap-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Volver al Inicio
-        </a>
-    </div>
-  </nav>
-
-  <header class="bg-delsur-blue text-white py-16 relative overflow-hidden">
-      <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-      <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <span class="text-delsur-orange font-bold tracking-widest text-xs uppercase mb-2 block">Portfolio</span>
-          <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Nuestra Galería de Obras</h1>
-          <p class="text-slate-300 max-w-2xl mx-auto text-lg">Explorá cada detalle de nuestros trabajos. Desde los cimientos hasta las terminaciones finales.</p>
-      </div>
-  </header>
-
-  <section class="py-8 border-b border-slate-200 bg-white sticky top-[73px] z-30 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 flex justify-center gap-4 overflow-x-auto no-scrollbar">
-          <button onclick="filterProjects('all')" class="filter-btn active px-6 py-2 rounded-full text-sm font-bold transition-all border border-delsur-blue bg-delsur-blue text-white shadow-lg">Todos</button>
-          <button onclick="filterProjects('vivienda')" class="filter-btn px-6 py-2 rounded-full text-sm font-bold transition-all border border-slate-200 text-slate-500 hover:border-delsur-orange hover:text-delsur-orange bg-white">Viviendas</button>
-          <button onclick="filterProjects('comercial')" class="filter-btn px-6 py-2 rounded-full text-sm font-bold transition-all border border-slate-200 text-slate-500 hover:border-delsur-orange hover:text-delsur-orange bg-white">Comerciales</button>
-          <button onclick="filterProjects('reforma')" class="filter-btn px-6 py-2 rounded-full text-sm font-bold transition-all border border-slate-200 text-slate-500 hover:border-delsur-orange hover:text-delsur-orange bg-white">Reformas</button>
-      </div>
-  </section>
-
-  <main class="py-16 bg-slate-50 min-h-screen">
-      <div id="projects-grid" class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          </div>
-  </main>
-
-  <footer class="bg-delsur-dark text-slate-400 text-sm py-8 text-center border-t border-slate-800">
-      <p>© 2024 Del Sur Construcciones.</p>
-  </footer>
-
-  <div id="project-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6">
-      <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
-      
-      <div id="modal-content" class="relative bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
-          
-          <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/50 hover:bg-black/80 text-white rounded-full p-2 backdrop-blur transition-colors">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-
-          <div class="w-full md:w-2/3 bg-black relative group h-64 md:h-auto">
-              <div class="overflow-hidden h-full relative">
-                  <div id="carousel-track" class="carousel-track h-full"></div>
-              </div>
-
-              <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/30 backdrop-blur text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all">
-                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              </button>
-              <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/30 backdrop-blur text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all">
-                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-              </button>
-
-              <div id="carousel-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-2"></div>
-          </div>
-
-          <div class="w-full md:w-1/3 p-8 overflow-y-auto bg-white flex flex-col">
-              <span id="modal-category" class="text-xs font-bold tracking-widest text-delsur-orange uppercase mb-2 block">Categoría</span>
-              <h2 id="modal-title" class="text-3xl font-display font-bold text-delsur-blue mb-4 leading-tight">Título del Proyecto</h2>
-              
-              <div class="flex flex-wrap gap-2 mb-6">
-                  <span id="modal-size" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200">0 m²</span>
-                  <span id="modal-location" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200">Ubicación</span>
-                  <span id="modal-year" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200">Año</span>
-              </div>
-
-              <div class="prose prose-sm text-slate-600 mb-8 flex-grow">
-                  <p id="modal-desc">Descripción del proyecto...</p>
-                  
-                  <div class="border-t border-slate-100 pt-6 mt-6">
-                      <h4 class="font-bold text-delsur-blue mb-3 text-sm">Servicios Incluidos:</h4>
-                      <ul id="modal-features" class="space-y-2 text-sm text-slate-500">
-                          </ul>
-                  </div>
-              </div>
-
-              <div class="mt-4 pt-4 border-t border-slate-100">
-                  <a id="modal-action-btn" href="#" class="block w-full py-3 rounded-xl bg-delsur-blue text-white font-bold text-center hover:bg-delsur-dark transition-all shadow-lg">
-                      ¡Quiero algo similar!
-                  </a>
-              </div>
-          </div>
-      </div>
-  </div>
-
-<script>
-    // ----------------------------
-    // LOGICA DEL PRELOADER
-    // ----------------------------
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const loader = document.getElementById('preloader');
-            if(loader) loader.classList.add('opacity-0', 'invisible');
-        }, 2000);
-    });
-
-    // Interceptar clicks para mostrar loader al navegar
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            if (href && !href.startsWith('#') && !href.startsWith('javascript') && link.target !== '_blank') {
-                e.preventDefault();
-                const loader = document.getElementById('preloader');
-                if(loader) loader.classList.remove('opacity-0', 'invisible');
-                setTimeout(() => window.location.href = href, 400); 
-            }
-        });
-    });
-
-    // ==========================================
-    // 1. BASE DE DATOS DINÁMICA (PHP -> JS)
-    // ==========================================
-    
-    // Leemos el JSON real desde el servidor
-    const projectsRaw = <?php 
-        $jsonFile = 'proyectos.json';
-        echo file_exists($jsonFile) ? file_get_contents($jsonFile) : '[]';
-    ?>;
-
-    // ADAPTADOR: Convertimos los datos del Admin al formato de tu diseño
-    const projects = projectsRaw.map(p => {
-        // Aseguramos que imagenes sea un array
-        let imgs = Array.isArray(p.imagenes) ? p.imagenes : [p.imagenes];
-        // Si no hay imagen, ponemos el logo por defecto
-        if (imgs.length === 0 || !imgs[0]) imgs = ['./imagenes/logo.webp'];
-
-        return {
-            id: p.id,
-            title: p.titulo,
-            category: p.categoria.toLowerCase(), // Admin: "Vivienda" -> Front: "vivienda"
-            // Intentamos sacar los m2 de la descripción, si no dice "Consultar"
-            size: (p.descripcion && p.descripcion.includes('m²')) ? p.descripcion.match(/\d+m²/)[0] : "Consultar",
-            location: "Berazategui, BA", // Dato por defecto (no está en el admin aún)
-            year: p.fecha ? p.fecha.substring(0, 4) : new Date().getFullYear(),
-            description: p.descripcion,
-            // Features genéricas (ya que el admin simple no tiene lista de features)
-            features: ["Proyecto Ejecutivo", "Dirección de Obra", "Llave en mano"],
-            images: imgs
-        };
-    });
-
-    // Si no hay proyectos cargados, mostramos uno de ejemplo para que no se rompa la web
-    if (projects.length === 0) {
-        projects.push({
-            id: 'demo',
-            title: 'Proyecto Ejemplo',
-            category: 'vivienda',
-            size: '150m²',
-            location: 'Muestra',
-            year: '2024',
-            description: 'Cargá tus propios proyectos desde el Panel de Administración /admin',
-            features: ['Ejemplo', 'Admin'],
-            images: ['./imagenes/logo.webp']
-        });
-    }
-
-    // ==========================================
-    // 2. LÓGICA DE RENDERIZADO Y FILTROS
-    // ==========================================
-    const grid = document.getElementById('projects-grid');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-
-    function renderProjects(filter = 'all') {
-        if(!grid) return;
-        grid.innerHTML = ''; // Limpiar grid
+    <div class="max-w-6xl mx-auto px-4">
         
-        const filtered = filter === 'all' 
-            ? projects 
-            : projects.filter(p => p.category === filter);
+        <div class="bg-white p-8 rounded-xl shadow-sm mb-10 border border-slate-200 relative">
+            
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="formTitle" class="font-bold text-xl flex items-center gap-2 text-slate-800">
+                    <i class="ph ph-plus-circle text-orange-500"></i> Nuevo Proyecto
+                </h2>
+                <button id="btnCancel" onclick="resetForm()" class="hidden text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded text-slate-600 font-bold">
+                    Cancelar Edición
+                </button>
+            </div>
 
-        if (filtered.length === 0) {
-            grid.innerHTML = '<p class="col-span-3 text-center text-slate-400 py-10">No hay proyectos en esta categoría aún.</p>';
-            return;
-        }
+            <form id="formProyecto">
+                <input type="hidden" name="accion" id="accionInput" value="crear">
+                <input type="hidden" name="id" id="idInput" value="">
 
-        filtered.forEach(p => {
-            // Creamos la tarjeta
-            const card = document.createElement('div');
-            card.className = "group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-slate-100";
-            // Usamos un ID seguro por si hay espacios
-            card.onclick = () => openModal(p.id);
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase text-slate-400">1. Info Principal</label>
+                        <input type="text" id="titulo" name="titulo" required class="w-full border p-2.5 rounded bg-slate-50 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Título (ej: Casa Lote 44)">
+                        <select id="categoria" name="categoria" class="w-full border p-2.5 rounded bg-slate-50">
+                            <option value="Vivienda">Vivienda</option>
+                            <option value="Comercial">Comercial / Oficina</option>
+                            <option value="Refacción">Refacción</option>
+                            <option value="Industrial">Industrial</option>
+                        </select>
+                        <textarea id="descripcion" name="descripcion" required rows="4" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Descripción corta del proyecto..."></textarea>
+                    </div>
 
-            card.innerHTML = `
-                <div class="h-64 overflow-hidden relative">
-                    <img src="${p.images[0]}" alt="${p.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
-                    <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                        <span class="bg-white text-delsur-orange px-4 py-2 rounded-full text-xs font-bold shadow-lg flex items-center gap-2">
-                            Ver Proyecto
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                        </span>
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase text-slate-400">2. Detalles Técnicos</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="ubicacion" name="ubicacion" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Ubicación (ej: Canning)">
+                            <input type="text" id="anio" name="anio" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Año" value="<?php echo date('Y'); ?>">
+                        </div>
+                        <input type="text" id="medidas" name="medidas" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Superficie (ej: 240m²)">
+                        
+                        <div class="pt-2">
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Título de la Lista</label>
+                            <input type="text" id="titulo_features" name="titulo_features" class="w-full border p-2.5 rounded bg-slate-50" placeholder="Ej: Servicios Incluidos" value="Servicios Incluidos">
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase text-slate-400">3. Contenido Extra</label>
+                        <div>
+                            <textarea id="features" name="features" rows="4" class="w-full border p-2.5 rounded bg-slate-50 text-sm font-mono" placeholder="Item 1&#10;Item 2&#10;Item 3"></textarea>
+                            <p class="text-xs text-slate-400 mt-1">Escribí un ítem por renglón.</p>
+                        </div>
+                        
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:bg-slate-50 cursor-pointer relative transition-colors">
+                            <input type="file" name="imagenes[]" multiple accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewFiles(this)">
+                            <div id="prevArea" class="text-slate-400 text-sm pointer-events-none">
+                                <i class="ph ph-images text-2xl mb-1"></i><br>
+                                <span id="fileLabel">Subir fotos</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="p-6">
-                    <span class="text-xs font-bold text-delsur-orange uppercase tracking-wider mb-1 block">${p.category}</span>
-                    <h3 class="text-xl font-bold text-delsur-blue mb-2 group-hover:text-delsur-orange transition-colors">${p.title}</h3>
-                    <p class="text-slate-500 text-sm line-clamp-2">${p.description}</p>
+
+                <div class="border-t border-slate-100 pt-6 flex justify-end">
+                    <button type="submit" id="btnSave" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg flex items-center gap-2">
+                        <i class="ph ph-upload-simple"></i> <span id="btnText">Publicar Proyecto</span>
+                    </button>
                 </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
+            </form>
+        </div>
 
-    function filterProjects(cat) {
-        // Actualizar botones
-        filterBtns.forEach(btn => {
-            // Normalizamos para comparar 'Vivienda' con 'vivienda'
-            const btnCat = btn.getAttribute('data-category') || btn.textContent.toLowerCase().trim();
-            const targetCat = cat === 'all' ? 'todos' : cat;
-            
-            // Lógica visual simple: si el texto del botón coincide con la categoría
-            if(btn.textContent.toLowerCase().includes(targetCat)) {
-                btn.classList.add('bg-delsur-blue', 'text-white', 'border-delsur-blue', 'shadow-lg');
-                btn.classList.remove('bg-white', 'text-slate-500', 'border-slate-200');
-            } else {
-                btn.classList.remove('bg-delsur-blue', 'text-white', 'border-delsur-blue', 'shadow-lg');
-                btn.classList.add('bg-white', 'text-slate-500', 'border-slate-200');
-            }
-        });
-        renderProjects(cat);
-    }
+        <div class="grid md:grid-cols-3 gap-6">
+            <?php foreach($proyectos as $p): 
+                // Asegurar compatibilidad con datos viejos/nuevos
+                $imgPortada = is_array($p['imagenes']) ? $p['imagenes'][0] : $p['imagenes'];
+            ?>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden group border border-slate-200 relative flex flex-col">
+                <div class="h-48 overflow-hidden relative">
+                    <img src="../<?php echo htmlspecialchars($imgPortada); ?>" class="w-full h-full object-cover">
+                    
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick='editar(<?php echo json_encode($p); ?>)' class="bg-white text-slate-700 p-2 rounded-full shadow hover:text-orange-600 transition-colors" title="Editar">
+                            <i class="ph ph-pencil-simple"></i>
+                        </button>
+                        <button onclick="borrar('<?php echo $p['id']; ?>')" class="bg-red-600 text-white p-2 rounded-full shadow hover:bg-red-700 transition-colors" title="Eliminar">
+                            <i class="ph ph-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-4 flex-1 flex flex-col">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-orange-500 uppercase"><?php echo htmlspecialchars($p['categoria']); ?></span>
+                        <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded"><?php echo htmlspecialchars($p['anio'] ?? '-'); ?></span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg leading-tight mb-2"><?php echo htmlspecialchars($p['titulo']); ?></h3>
+                    
+                    <div class="mt-auto pt-4 border-t border-slate-100 text-xs text-slate-400 flex flex-wrap gap-2">
+                        <span class="flex items-center gap-1"><i class="ph ph-map-pin"></i> <?php echo htmlspecialchars($p['ubicacion'] ?? 'Consultar'); ?></span>
+                        <span class="flex items-center gap-1"><i class="ph ph-ruler"></i> <?php echo htmlspecialchars($p['medidas'] ?? '-'); ?></span>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
-    // ==========================================
-    // 3. LÓGICA DEL MODAL Y CARRUSEL
-    // ==========================================
-    const modal = document.getElementById('project-modal');
-    const modalContent = document.getElementById('modal-content');
-    let currentProject = null;
-    let currentSlide = 0;
-    let autoPlayInterval = null;
-
-    function openModal(id) {
-        currentProject = projects.find(p => p.id === id);
-        if(!currentProject) return;
-
-        // Llenar datos
-        document.getElementById('modal-title').textContent = currentProject.title;
-        document.getElementById('modal-category').textContent = currentProject.category;
-        document.getElementById('modal-desc').textContent = currentProject.description;
-        document.getElementById('modal-size').textContent = currentProject.size;
-        document.getElementById('modal-location').textContent = currentProject.location;
-        document.getElementById('modal-year').textContent = currentProject.year;
-
-        // Llenar features
-        const featsList = document.getElementById('modal-features');
-        featsList.innerHTML = '';
-        currentProject.features.forEach(f => {
-            const li = document.createElement('li');
-            li.className = "flex items-center gap-2";
-            li.innerHTML = `<span class="text-delsur-orange text-lg">•</span> ${f}`;
-            featsList.appendChild(li);
-        });
-
-        // Configurar Botón de Acción para llevar el nombre del proyecto
-        const actionBtn = document.getElementById('modal-action-btn');
-        actionBtn.href = `comenzar.php?ref_proyecto=${encodeURIComponent(currentProject.title)}`;
-
-        // Configurar Carrusel
-        setupCarousel(currentProject.images);
-
-        // Mostrar Modal con animación
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-        // Pequeño delay para permitir que el navegador renderice antes de la animación CSS
-        setTimeout(() => {
-            modalContent.classList.remove('modal-enter');
-            modalContent.classList.add('modal-enter-active');
-        }, 10);
-
-        startAutoPlay();
-    }
-
-    function closeModal() {
-        if(!modalContent) return;
-        modalContent.classList.remove('modal-enter-active');
-        modalContent.classList.add('modal-exit-active');
-        
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modalContent.classList.remove('modal-exit-active');
-            document.body.classList.remove('modal-open');
-            stopAutoPlay();
-        }, 200);
-    }
-
-    // --- Carrusel Logic ---
-    function setupCarousel(images) {
-        currentSlide = 0;
-        const track = document.getElementById('carousel-track');
-        const dots = document.getElementById('carousel-dots');
-        track.innerHTML = '';
-        dots.innerHTML = '';
-
-        images.forEach((img, index) => {
-            // Slide
-            const imgContainer = document.createElement('div');
-            imgContainer.className = "min-w-full h-full"; // Importante para flex layout
-            
-            const imgEl = document.createElement('img');
-            imgEl.src = img;
-            imgEl.className = "w-full h-full object-cover";
-            
-            imgContainer.appendChild(imgEl);
-            track.appendChild(imgContainer);
-
-            // Dot
-            const dot = document.createElement('button');
-            dot.className = `w-2 h-2 rounded-full transition-all ${index === 0 ? 'bg-white w-6' : 'bg-white/50'}`;
-            dot.onclick = (e) => { e.stopPropagation(); goToSlide(index); };
-            dots.appendChild(dot);
-        });
-        
-        updateCarousel();
-    }
-
-    function updateCarousel() {
-        const track = document.getElementById('carousel-track');
-        // Usamos translate negativo para mover a la izquierda
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
-        
-        // Update dots
-        const dots = document.getElementById('carousel-dots').children;
-        Array.from(dots).forEach((d, i) => {
-            d.className = `w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-6' : 'bg-white/50'}`;
-        });
-    }
-
-    function nextSlide() {
-        if(!currentProject) return;
-        currentSlide = (currentSlide + 1) % currentProject.images.length;
-        updateCarousel();
-    }
-
-    function prevSlide() {
-        if(!currentProject) return;
-        currentSlide = (currentSlide - 1 + currentProject.images.length) % currentProject.images.length;
-        updateCarousel();
-    }
-
-    function goToSlide(n) {
-        currentSlide = n;
-        updateCarousel();
-        stopAutoPlay(); 
-        startAutoPlay(); 
-    }
-
-    function startAutoPlay() {
-        stopAutoPlay();
-        if(currentProject && currentProject.images.length > 1) {
-            autoPlayInterval = setInterval(nextSlide, 3000); 
+    <script>
+    function previewFiles(input) {
+        const count = input.files.length;
+        const label = document.getElementById('fileLabel');
+        if(count > 0) {
+            label.innerText = `${count} foto(s) seleccionada(s)`;
+            label.className = "text-orange-600 font-bold";
         }
     }
 
-    function stopAutoPlay() {
-        if(autoPlayInterval) clearInterval(autoPlayInterval);
+    // --- FUNCIÓN EDITAR ---
+    function editar(p) {
+        // Rellenar campos ocultos
+        document.getElementById('idInput').value = p.id;
+        document.getElementById('accionInput').value = 'editar';
+
+        // Rellenar campos de texto
+        document.getElementById('titulo').value = p.titulo;
+        document.getElementById('categoria').value = p.categoria;
+        document.getElementById('descripcion').value = p.descripcion;
+        
+        // Rellenar campos nuevos (con fallback por si son viejos)
+        document.getElementById('ubicacion').value = p.ubicacion || '';
+        document.getElementById('anio').value = p.anio || '';
+        document.getElementById('medidas').value = p.medidas || '';
+        document.getElementById('titulo_features').value = p.titulo_features || 'Servicios Incluidos';
+
+        // Convertir array de features a texto con saltos de línea
+        let feats = p.features;
+        if(Array.isArray(feats)) feats = feats.join('\n');
+        document.getElementById('features').value = feats || '';
+
+        // Cambiar estado visual del formulario
+        document.getElementById('formTitle').innerHTML = '<i class="ph ph-pencil-simple text-orange-500"></i> Editando Proyecto';
+        document.getElementById('btnText').innerText = 'Guardar Cambios';
+        document.getElementById('btnCancel').classList.remove('hidden');
+        document.getElementById('btnSave').classList.replace('bg-orange-600', 'bg-blue-600');
+        document.getElementById('btnSave').classList.replace('hover:bg-orange-700', 'hover:bg-blue-700');
+        document.getElementById('fileLabel').innerText = "Subir fotos nuevas (se agregan)";
+
+        // Scroll suave hacia arriba
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Pausar autoplay al hacer hover sobre la imagen
-    const trackContainer = document.getElementById('carousel-track');
-    if(trackContainer) {
-        trackContainer.parentElement.addEventListener('mouseenter', stopAutoPlay);
-        trackContainer.parentElement.addEventListener('mouseleave', startAutoPlay);
+    // --- FUNCIÓN RESET ---
+    function resetForm() {
+        document.getElementById('formProyecto').reset();
+        document.getElementById('idInput').value = '';
+        document.getElementById('accionInput').value = 'crear';
+        
+        document.getElementById('formTitle').innerHTML = '<i class="ph ph-plus-circle text-orange-500"></i> Nuevo Proyecto';
+        document.getElementById('btnText').innerText = 'Publicar Proyecto';
+        document.getElementById('btnCancel').classList.add('hidden');
+        
+        document.getElementById('btnSave').classList.replace('bg-blue-600', 'bg-orange-600');
+        document.getElementById('btnSave').classList.replace('hover:bg-blue-700', 'hover:bg-orange-700');
+        document.getElementById('fileLabel').innerText = "Subir fotos";
     }
 
-    // Event Listeners para cerrar modal clickeando afuera
-    if(modal) {
-        modal.addEventListener('click', (e) => {
-            if(e.target === modal) closeModal();
-        });
+    // --- ENVÍO DEL FORMULARIO ---
+    document.getElementById('formProyecto').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnSave');
+        const ogText = document.getElementById('btnText').innerText;
+        
+        btn.disabled = true; 
+        document.getElementById('btnText').innerText = 'Procesando...';
+        
+        const formData = new FormData(e.target);
+        
+        try {
+            const res = await fetch('guardar_proyecto.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if(data.success) location.reload();
+            else alert('Error: ' + data.error);
+        } catch(err) { 
+            alert('Error de conexión'); 
+        }
+        
+        btn.disabled = false; 
+        document.getElementById('btnText').innerText = ogText;
+    });
+
+    async function borrar(id) {
+        if(!confirm('¿Borrar este proyecto definitivamente?')) return;
+        const fd = new FormData(); fd.append('accion','eliminar'); fd.append('id', id);
+        await fetch('guardar_proyecto.php', { method: 'POST', body: fd });
+        location.reload();
     }
-
-    // Inicializar
-    renderProjects();
-
-  </script>
+    </script>
 </body>
 </html>
