@@ -72,7 +72,7 @@
                 Ideal si tenés el terreno y querés saber qué se puede construir y cuánto va a costar realmente.
             </p>
             
-            <a href="https://www.youtube.com/shorts/PTUKD9vGH-U" class="block w-full py-3 rounded-xl border-2 border-slate-200 text-slate-600 font-bold text-center hover:border-delsur-blue hover:text-delsur-blue transition-all mb-8">
+            <a href="https://mpago.la/2epkCqz" class="block w-full py-3 rounded-xl border-2 border-slate-200 text-slate-600 font-bold text-center hover:border-delsur-blue hover:text-delsur-blue transition-all mb-8">
                 Elegir Asesoría
             </a>
 
@@ -96,7 +96,7 @@
                 La experiencia completa. Diseñá tu casa con nuestra herramienta exclusiva y recibí asesoramiento prioritario.
             </p>
 
-            <a href="https://www.youtube.com/shorts/PTUKD9vGH-U" class="block w-full py-4 rounded-xl bg-delsur-orange text-white font-bold text-center hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/50 transition-all mb-8 relative overflow-hidden group">
+            <a href="https://mpago.la/1eswcbb" class="block w-full py-4 rounded-xl bg-delsur-orange text-white font-bold text-center hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/50 transition-all mb-8 relative overflow-hidden group">
                 <span class="relative z-10">CONTRATAR PACK</span>
                 <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </a>
