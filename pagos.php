@@ -109,7 +109,7 @@
             </ul>
         </div>
     </div>
-    <div class="text-center mt-12 text-sm text-slate-500"><p>¿Tenés dudas antes de pagar? <a href="https://wa.me/5491123941812" target="_blank" class="text-delsur-orange hover:underline">Escribinos por WhatsApp</a></p></div>
+    <div class="text-center mt-12 text-sm text-slate-500"><p>¿Tenés dudas antes de pagar? <a href="https://wa.me/5491167040733" target="_blank" class="text-delsur-orange hover:underline">Escribinos por WhatsApp</a></p></div>
   </main>
 
   <script>
