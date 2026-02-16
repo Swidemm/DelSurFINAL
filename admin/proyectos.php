@@ -28,7 +28,7 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Esto la resizearía a los bordes recortando lo que sobre */
+            object-fit: cover;
             display: block;
         }
     </style>
@@ -103,13 +103,20 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         <div class="grid md:grid-cols-3 gap-8">
             <?php foreach($proyectos as $p): 
                 $imgPortada = is_array($p['imagenes']) ? $p['imagenes'][0] : $p['imagenes'];
+                $esDestacado = isset($p['destacado']) && $p['destacado'] === true;
             ?>
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col group">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col group relative">
                 
                 <div class="img-container">
                     <img src="../<?php echo htmlspecialchars($imgPortada); ?>" alt="Proyecto">
                     
-                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <button onclick="toggleDestacado('<?php echo $p['id']; ?>')" 
+                                class="p-2 rounded-full shadow transition-all <?php echo $esDestacado ? 'bg-orange-500 text-white' : 'bg-white text-slate-400 hover:text-orange-500'; ?>"
+                                title="<?php echo $esDestacado ? 'Quitar de la Home' : 'Mostrar en la Home'; ?>">
+                            <i class="ph ph-star<?php echo $esDestacado ? '-fill' : ''; ?>"></i>
+                        </button>
+
                         <button onclick='editar(<?php echo json_encode($p); ?>)' class="bg-white text-slate-700 p-2 rounded-full shadow hover:text-orange-600">
                             <i class="ph ph-pencil-simple"></i>
                         </button>
@@ -140,6 +147,19 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
         const count = input.files.length;
         document.getElementById('fileLabel').innerText = count + " fotos elegidas";
         document.getElementById('fileLabel').className = "text-orange-600 font-bold";
+    }
+
+    // --- NUEVA FUNCIÓN DESTACADOS ---
+    async function toggleDestacado(id) {
+        const fd = new FormData();
+        fd.append('accion', 'toggle_destacado');
+        fd.append('id', id);
+        try {
+            const res = await fetch('guardar_proyecto.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if(data.success) location.reload();
+            else alert('Error al destacar');
+        } catch(err) { console.error(err); }
     }
 
     function editar(p) {
@@ -178,7 +198,10 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
     document.getElementById('formProyecto').addEventListener('submit', async e => {
         e.preventDefault();
         const btn = document.getElementById('btnSave');
+        const ogText = document.getElementById('btnText').innerText;
         btn.disabled = true;
+        document.getElementById('btnText').innerText = 'Procesando...';
+        
         const formData = new FormData(e.target);
         
         try {
@@ -187,6 +210,9 @@ $proyectos = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), 
             if(data.success) location.reload();
             else alert('Error: ' + data.error);
         } catch(err) { alert('Error de conexión'); }
+        
+        btn.disabled = false;
+        document.getElementById('btnText').innerText = ogText;
     });
 
     async function borrar(id) {

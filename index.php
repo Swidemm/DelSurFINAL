@@ -1,3 +1,18 @@
+<?php
+// index.php - Del Sur Construcciones
+$jsonFile = 'proyectos.json';
+$proyectosTodo = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
+
+// Filtramos solo los marcados con la estrella en el admin
+$proyectosHome = array_filter($proyectosTodo, function($p) {
+    return isset($p['destacado']) && $p['destacado'] === true;
+});
+
+// Si no marcaste ninguno, el sistema elige los últimos 3 por defecto
+if (empty($proyectosHome)) {
+    $proyectosHome = array_slice($proyectosTodo, 0, 3);
+}
+?>
 <!doctype html>
 <html lang="es-AR" class="scroll-smooth">
 <head>
@@ -39,8 +54,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="./css/styles.css" />
-
   <style>
     /* 1. ANIMACIÓN DE CARGA */
     @keyframes loading {
@@ -120,25 +133,21 @@
   <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm" id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-24">
-        
         <a href="#inicio" class="flex-shrink-0 group">
           <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-16 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
-
         <div class="hidden md:flex items-center space-x-6">
           <a href="#servicios" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Servicios</a>
-          <a href="proceso.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Cómo Trabajamos</a> <a href="pagos.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Precios</a>
-          
+          <a href="proceso.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Cómo Trabajamos</a> 
+          <a href="pagos.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Precios</a>
           <a href="planificador.php" class="text-sm font-bold text-delsur-blue hover:text-delsur-orange transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             Acceso Clientes
           </a>
-
           <a href="#contacto" class="px-6 py-2.5 rounded-full bg-delsur-orange text-white font-semibold text-sm hover:bg-orange-600 hover:shadow-glow transition-all transform hover:-translate-y-0.5 shadow-lg shadow-orange-500/30">
             Presupuesto
           </a>
         </div>
-
         <div class="md:hidden flex items-center">
             <button id="mobileMenuBtn" class="text-slate-600 focus:outline-none p-2">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -149,7 +158,8 @@
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
         <div class="px-4 pt-2 pb-6 space-y-2">
             <a href="#servicios" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Servicios</a>
-            <a href="proceso.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Cómo Trabajamos</a> <a href="pagos.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Planes y Precios</a>
+            <a href="proceso.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Cómo Trabajamos</a> 
+            <a href="pagos.php" class="block py-3 text-slate-600 font-medium border-b border-slate-50">Planes y Precios</a>
             <a href="planificador.php" class="block py-3 text-delsur-blue font-bold border-b border-slate-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 Ingresar al Planificador
@@ -164,38 +174,18 @@
       <source src="./videos/hero.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-gradient-to-r from-delsur-blue/90 via-delsur-blue/70 to-delsur-blue/40"></div>
-    
     <div id="hero-pattern" class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgNDBMMDQgMEgwIiBmaWxsPSIjZmZmIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+')] animate-wind-pattern"></div>
-
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left pt-20">
       <div class="reveal active">
-          <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
-            Construcción & Diseño
-          </span>
+          <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">Construcción & Diseño</span>
           <h1 class="font-display text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
             Hacemos realidad <br>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-200 to-orange-400 animate-text-shine">tu visión.</span>
           </h1>
-          <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl font-light leading-relaxed">
-            Especialistas en obras llave en mano y arquitectura comercial en AMBA. 
-            Desde el primer boceto hasta la entrega de llaves.
-          </p>
-          
+          <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl font-light leading-relaxed">Especialistas en obras llave en mano y arquitectura comercial en AMBA. Desde el primer boceto hasta la entrega de llaves.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="proyectos.php" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">
-              Ver Galería
-            </a>
-            <a href="proceso.php" class="px-8 py-4 rounded-xl bg-delsur-orange text-white font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-500/40">
-              ¿Cómo Trabajamos?
-            </a>
-          </div>
-
-          <div class="mt-8 flex items-center justify-center md:justify-start gap-2 text-sm">
-            <span class="text-slate-300">¿Ya tenés tu Pack Premium?</span>
-            <a href="planificador.php" class="text-delsur-orange font-bold hover:text-white transition-colors flex items-center gap-1 border-b border-delsur-orange/50 hover:border-white">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                Ingresá al Planificador acá
-            </a>
+            <a href="proyectos.php" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">Ver Galería</a>
+            <a href="proceso.php" class="px-8 py-4 rounded-xl bg-delsur-orange text-white font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-500/40">¿Cómo Trabajamos?</a>
           </div>
       </div>
     </div>
@@ -203,15 +193,9 @@
 
   <div class="bg-delsur-dark border-b border-slate-800 text-white py-6">
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center md:justify-between items-center gap-8 opacity-80 text-sm md:text-base font-medium">
-        <div class="flex items-center gap-3">
-            <span class="text-delsur-orange text-2xl">★</span> +10 Años de Experiencia
-        </div>
-        <div class="flex items-center gap-3">
-            <span class="text-delsur-orange text-2xl">✓</span> +50 Proyectos Entregados
-        </div>
-        <div class="flex items-center gap-3">
-            <span class="text-delsur-orange text-2xl">🛡</span> Garantía Escrita de Obra
-        </div>
+        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">★</span> +10 Años de Experiencia</div>
+        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">✓</span> +50 Proyectos Entregados</div>
+        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">🛡</span> Garantía Escrita de Obra</div>
     </div>
   </div>
 
@@ -221,7 +205,6 @@
         <h2 class="font-display text-3xl md:text-4xl font-bold text-delsur-blue mb-4">Soluciones Integrales</h2>
         <p class="text-slate-600 text-lg">No solo construimos paredes, creamos espacios funcionales donde la vida sucede.</p>
       </div>
-
       <div class="grid md:grid-cols-3 gap-8">
         <div class="bg-white p-8 rounded-2xl shadow-card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 reveal delay-100 group">
           <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-delsur-blue transition-colors">
@@ -248,73 +231,6 @@
     </div>
   </section>
 
-  <section id="proceso" class="py-24 bg-delsur-light border-y border-slate-200">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-        <div class="reveal">
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-delsur-blue mb-6">Claridad ante todo</h2>
-            <p class="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">
-                Sabemos que una obra puede generar incertidumbre. Por eso, diseñamos un método transparente de 5 pasos para que sepas qué pasa en cada momento.
-            </p>
-            
-            <a href="proceso.php" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-delsur-orange font-bold rounded-xl shadow-lg border border-slate-100 hover:scale-105 transition-transform group">
-                Ver el paso a paso interactivo
-                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-            
-            <div class="mt-8 flex justify-center gap-8 opacity-50">
-                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
-                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
-                <span class="h-2 w-2 rounded-full bg-slate-300"></span>
-            </div>
-        </div>
-    </div>
-  </section>
-
-  <section class="py-24 bg-gradient-to-br from-delsur-dark via-delsur-blue to-slate-900 text-white relative overflow-hidden">
-     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgNjBMMjAgNDBNNDAgMjBMNjAgME0wIDIwTDIwIDBNMjAgNjBMNDAgNDBNNDAgNjBMNjAgNDAiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIi8+PC9zdmc+')] opacity-20"></div>
-     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-         <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-delsur-orange/30 text-delsur-orange text-xs font-bold uppercase tracking-wider mb-4">
-                Comenzá con el pie derecho
-             </div>
-             <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Asesoría Profesional</h2>
-             <p class="text-blue-100 text-lg">
-                Antes de iniciar la obra, despejá todas tus dudas con un experto. Elegí el plan que mejor se adapte a tus necesidades.
-             </p>
-         </div>
-
-         <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-             <div class="glass-panel p-8 rounded-2xl border-t border-white/10 reveal delay-100 hover:bg-white/5 transition-colors">
-                 <h3 class="text-xl font-bold text-slate-300 mb-2">Asesoría General</h3>
-                 <div class="flex items-baseline gap-2 mb-6">
-                     <span class="text-4xl font-bold text-white">$3.500</span>
-                 </div>
-                 <p class="text-sm text-slate-400 mb-8 h-10">Ideal para consultas puntuales, viabilidad de terreno y estimación de costos.</p>
-                 <ul class="space-y-4 mb-8 text-sm text-slate-300">
-                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Reunión técnica 1 a 1</span></li>
-                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Presupuesto estimado de obra</span></li>
-                     <li class="flex items-center gap-3 opacity-50"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="line-through">Licencia de Software 2D</span></li>
-                 </ul>
-                 <a href="pagos.php" class="block w-full py-3 rounded-xl border border-white/20 text-center font-bold hover:bg-white hover:text-delsur-blue transition-all">Ver detalle</a>
-             </div>
-             <div class="glass-panel p-8 rounded-2xl border border-delsur-orange/50 bg-delsur-orange/5 reveal delay-200 relative transform hover:-translate-y-2 transition-transform">
-                 <div class="absolute top-0 right-0 bg-delsur-orange text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RECOMENDADO</div>
-                 <h3 class="text-xl font-bold text-orange-300 mb-2">Pack Premium</h3>
-                 <div class="flex items-baseline gap-2 mb-6">
-                     <span class="text-4xl font-bold text-white">$4.500</span>
-                 </div>
-                 <p class="text-sm text-blue-100 mb-8 h-10">La experiencia completa: Asesoría experta + Herramientas de diseño.</p>
-                 <ul class="space-y-4 mb-8 text-sm text-white">
-                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Todo lo incluido en Asesoría</span></li>
-                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span class="font-bold">Licencia Planificador 2D</span></li>
-                     <li class="flex items-center gap-3"><svg class="w-5 h-5 text-delsur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Prioridad en agenda</span></li>
-                 </ul>
-                 <a href="pagos.php" class="block w-full py-3 rounded-xl bg-delsur-orange text-white text-center font-bold hover:bg-orange-600 transition-all shadow-glow animate-pulse-fast">CONTRATAR PACK</a>
-             </div>
-         </div>
-     </div>
-  </section>
-
   <section id="proyectos" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-end mb-12 reveal">
@@ -325,18 +241,22 @@
         <a href="proyectos.php" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
       </div>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-100 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-1.webp" alt="Casa Moderna" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Residencia Los Álamos</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Obra llave en mano • 240m²</p></div>
+        <?php foreach($proyectosHome as $index => $ph): 
+            $imgHome = is_array($ph['imagenes']) ? $ph['imagenes'][0] : $ph['imagenes'];
+            $delay = ($index + 1) * 100;
+        ?>
+        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-<?php echo $delay; ?> relative shadow-md hover:shadow-xl transition-all">
+          <div class="overflow-hidden h-72">
+            <img src="./<?php echo htmlspecialchars($imgHome); ?>" alt="<?php echo htmlspecialchars($ph['titulo']); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          </div>
+          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+            <h3 class="text-xl font-bold"><?php echo htmlspecialchars($ph['titulo']); ?></h3>
+            <p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                <?php echo htmlspecialchars($ph['categoria']); ?> • <?php echo htmlspecialchars($ph['medidas']); ?>
+            </p>
+          </div>
         </div>
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-200 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-2.webp" alt="Oficinas" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Oficinas Tech Center</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Remodelación Comercial • 500m²</p></div>
-        </div>
-        <div class="group rounded-2xl overflow-hidden cursor-pointer reveal delay-300 relative shadow-md hover:shadow-xl transition-all">
-          <div class="overflow-hidden h-72"><img src="./imagenes/proyectos/proyecto-3.webp" alt="Reforma" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-          <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent text-white pt-20 translate-y-4 group-hover:translate-y-0 transition-transform"><h3 class="text-xl font-bold">Renovación Palermo</h3><p class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Diseño Interior y Fachada</p></div>
-        </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </section>

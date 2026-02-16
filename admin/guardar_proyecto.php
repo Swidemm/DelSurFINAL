@@ -7,7 +7,6 @@ header('Content-Type: application/json');
 $jsonFile = '../proyectos.json';
 $uploadDir = '../imagenes/proyectos/';
 
-// Crear directorio si no existe
 if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,7 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $accion = $_POST['accion'] ?? '';
 
-    // --- ACCIÓN: ELIMINAR ---
+    // --- NUEVA ACCIÓN: TOGGLE DESTACADO (ESTRELLA) ---
+    if ($accion === 'toggle_destacado') {
+        $id = $_POST['id'];
+        foreach ($current as &$p) {
+            if ($p['id'] === $id) {
+                // Si existe lo invierte, si no existe lo crea como true
+                $p['destacado'] = !(isset($p['destacado']) && $p['destacado'] === true);
+                break;
+            }
+        }
+        file_put_contents($jsonFile, json_encode($current, JSON_PRETTY_PRINT));
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
     if ($accion === 'eliminar') {
         $id = $_POST['id'];
         $nuevo = array_values(array_filter($current, fn($i) => $i['id'] !== $id));
@@ -25,17 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // --- ACCIÓN: CREAR O EDITAR ---
     if ($accion === 'crear' || $accion === 'editar') {
-        
-        // 1. Procesar Lista de Features (textarea -> array)
         $featuresRaw = $_POST['features'] ?? '';
-        // Separamos por salto de línea (\n), limpiamos espacios y filtramos vacíos
         $featuresArray = array_filter(array_map('trim', explode("\n", $featuresRaw)));
-        // Si quedó vacío, ponemos uno por defecto
         if(empty($featuresArray)) $featuresArray = ["Consultar detalles"];
 
-        // 2. Procesar Imágenes Nuevas (si se subieron)
         $imagenesNuevas = [];
         if (isset($_FILES['imagenes']) && !empty($_FILES['imagenes']['name'][0])) {
             $totalFiles = count($_FILES['imagenes']['name']);
@@ -50,9 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // --- LÓGICA PARA CREAR ---
         if ($accion === 'crear') {
-            // Si no subió foto al crear, usamos default
             if (empty($imagenesNuevas)) $imagenesNuevas[] = 'imagenes/logo.webp';
 
             $nuevoProyecto = [
@@ -60,27 +65,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'titulo' => $_POST['titulo'],
                 'categoria' => $_POST['categoria'],
                 'descripcion' => $_POST['descripcion'],
-                // Campos Nuevos
                 'ubicacion' => $_POST['ubicacion'] ?: 'Consultar',
                 'medidas' => $_POST['medidas'] ?: 'A medida',
                 'anio' => $_POST['anio'] ?: date('Y'),
                 'titulo_features' => $_POST['titulo_features'] ?: 'Características',
                 'features' => array_values($featuresArray),
                 'imagenes' => $imagenesNuevas,
-                'fecha_carga' => date('Y-m-d')
+                'fecha_carga' => date('Y-m-d'),
+                'destacado' => false // Por defecto no es destacado
             ];
-            
-            // Agregamos al principio de la lista
             array_unshift($current, $nuevoProyecto);
 
-        // --- LÓGICA PARA EDITAR ---
         } elseif ($accion === 'editar') {
             $id = $_POST['id'];
-            $found = false;
-            
             foreach ($current as &$p) {
                 if ($p['id'] === $id) {
-                    // Actualizamos todos los textos
                     $p['titulo'] = $_POST['titulo'];
                     $p['categoria'] = $_POST['categoria'];
                     $p['descripcion'] = $_POST['descripcion'];
@@ -89,32 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $p['anio'] = $_POST['anio'];
                     $p['titulo_features'] = $_POST['titulo_features'];
                     $p['features'] = array_values($featuresArray);
-                    
-                    // Manejo de Imágenes:
-                    // Si el proyecto viejo tiene la imagen como string (formato antiguo), la convertimos a array
                     if (!is_array($p['imagenes'])) $p['imagenes'] = [$p['imagenes']];
-                    
-                    // Si subieron fotos nuevas, las SUMAMOS a las que ya tenía
                     if (!empty($imagenesNuevas)) {
                         $p['imagenes'] = array_merge($p['imagenes'], $imagenesNuevas);
                     }
-                    
-                    $found = true;
                     break;
                 }
             }
-            if (!$found) {
-                echo json_encode(['error' => 'Proyecto no encontrado']);
-                exit;
-            }
         }
-
-        // Guardar JSON
-        if (file_put_contents($jsonFile, json_encode($current, JSON_PRETTY_PRINT))) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['error' => 'Error al escribir en el archivo JSON']);
-        }
+        file_put_contents($jsonFile, json_encode($current, JSON_PRETTY_PRINT));
+        echo json_encode(['success' => true]);
     }
 }
 ?>
