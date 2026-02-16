@@ -1,14 +1,15 @@
 <?php
 // index.php - Del Sur Construcciones
+// Carga de proyectos para la sección dinámica
 $jsonFile = 'proyectos.json';
 $proyectosTodo = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
 
-// Filtramos solo los marcados con la estrella en el admin
+// Filtramos solo los marcados con la estrella (destacados)
 $proyectosHome = array_filter($proyectosTodo, function($p) {
     return isset($p['destacado']) && $p['destacado'] === true;
 });
 
-// Si no marcaste ninguno, el sistema elige los últimos 3 por defecto
+// Si no hay ninguno marcado, mostramos los últimos 3 por defecto
 if (empty($proyectosHome)) {
     $proyectosHome = array_slice($proyectosTodo, 0, 3);
 }
@@ -55,7 +56,7 @@ if (empty($proyectosHome)) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    /* 1. ANIMACIÓN DE CARGA */
+    /* ANIMACIÓN DE CARGA */
     @keyframes loading {
         0% { transform: translateX(-100%); }
         50% { transform: translateX(0); }
@@ -63,7 +64,7 @@ if (empty($proyectosHome)) {
     }
     #preloader { transition: opacity 0.6s ease-out, visibility 0.6s; }
 
-    /* 2. TEXTO BRILLANTE (SHINE) */
+    /* TEXTO BRILLANTE (SHINE) */
     @keyframes textShine {
         0% { background-position: 0% 50%; }
         100% { background-position: 200% 50%; }
@@ -73,7 +74,7 @@ if (empty($proyectosHome)) {
         animation: textShine 4s linear infinite;
     }
 
-    /* 3. FONDO VIENTO (WIND) */
+    /* FONDO VIENTO (WIND) */
     @keyframes windDrift {
         from { background-position: 0px 0px; }
         to { background-position: 1000px 500px; }
@@ -84,7 +85,7 @@ if (empty($proyectosHome)) {
         transition: transform 0.1s ease-out; 
     }
 
-    /* 4. UTILS */
+    /* UTILS */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -136,18 +137,22 @@ if (empty($proyectosHome)) {
         <a href="#inicio" class="flex-shrink-0 group">
           <img src="./imagenes/logo.webp" alt="Del Sur Construcciones" class="h-16 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
+
         <div class="hidden md:flex items-center space-x-6">
           <a href="#servicios" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Servicios</a>
           <a href="proceso.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Cómo Trabajamos</a> 
           <a href="pagos.php" class="text-sm font-medium text-slate-600 hover:text-delsur-blue transition-colors">Precios</a>
+          
           <a href="planificador.php" class="text-sm font-bold text-delsur-blue hover:text-delsur-orange transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             Acceso Clientes
           </a>
+
           <a href="#contacto" class="px-6 py-2.5 rounded-full bg-delsur-orange text-white font-semibold text-sm hover:bg-orange-600 hover:shadow-glow transition-all transform hover:-translate-y-0.5 shadow-lg shadow-orange-500/30">
             Presupuesto
           </a>
         </div>
+
         <div class="md:hidden flex items-center">
             <button id="mobileMenuBtn" class="text-slate-600 focus:outline-none p-2">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -174,18 +179,38 @@ if (empty($proyectosHome)) {
       <source src="./videos/hero.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-gradient-to-r from-delsur-blue/90 via-delsur-blue/70 to-delsur-blue/40"></div>
+    
     <div id="hero-pattern" class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgNDBMMDQgMEgwIiBmaWxsPSIjZmZmIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+')] animate-wind-pattern"></div>
+
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left pt-20">
       <div class="reveal active">
-          <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">Construcción & Diseño</span>
+          <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-xs font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
+            Construcción & Diseño
+          </span>
           <h1 class="font-display text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
             Hacemos realidad <br>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-200 to-orange-400 animate-text-shine">tu visión.</span>
           </h1>
-          <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl font-light leading-relaxed">Especialistas en obras llave en mano y arquitectura comercial en AMBA. Desde el primer boceto hasta la entrega de llaves.</p>
+          <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl font-light leading-relaxed">
+            Especialistas en obras llave en mano y arquitectura comercial en AMBA. 
+            Desde el primer boceto hasta la entrega de llaves.
+          </p>
+          
           <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="proyectos.php" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">Ver Galería</a>
-            <a href="proceso.php" class="px-8 py-4 rounded-xl bg-delsur-orange text-white font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-500/40">¿Cómo Trabajamos?</a>
+            <a href="proyectos.php" class="px-8 py-4 rounded-xl bg-white text-delsur-blue font-bold hover:bg-slate-100 transition shadow-lg">
+              Ver Galería
+            </a>
+            <a href="proceso.php" class="px-8 py-4 rounded-xl bg-delsur-orange text-white font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-500/40">
+              ¿Cómo Trabajamos?
+            </a>
+          </div>
+
+          <div class="mt-8 flex items-center justify-center md:justify-start gap-2 text-sm">
+            <span class="text-slate-300">¿Ya tenés tu Pack Premium?</span>
+            <a href="planificador.php" class="text-delsur-orange font-bold hover:text-white transition-colors flex items-center gap-1 border-b border-delsur-orange/50 hover:border-white">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Ingresá al Planificador acá
+            </a>
           </div>
       </div>
     </div>
@@ -193,9 +218,15 @@ if (empty($proyectosHome)) {
 
   <div class="bg-delsur-dark border-b border-slate-800 text-white py-6">
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center md:justify-between items-center gap-8 opacity-80 text-sm md:text-base font-medium">
-        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">★</span> +10 Años de Experiencia</div>
-        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">✓</span> +50 Proyectos Entregados</div>
-        <div class="flex items-center gap-3"><span class="text-delsur-orange text-2xl">🛡</span> Garantía Escrita de Obra</div>
+        <div class="flex items-center gap-3">
+            <span class="text-delsur-orange text-2xl">★</span> +10 Años de Experiencia
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-delsur-orange text-2xl">✓</span> +50 Proyectos Entregados
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-delsur-orange text-2xl">🛡</span> Garantía Escrita de Obra
+        </div>
     </div>
   </div>
 
@@ -205,6 +236,7 @@ if (empty($proyectosHome)) {
         <h2 class="font-display text-3xl md:text-4xl font-bold text-delsur-blue mb-4">Soluciones Integrales</h2>
         <p class="text-slate-600 text-lg">No solo construimos paredes, creamos espacios funcionales donde la vida sucede.</p>
       </div>
+
       <div class="grid md:grid-cols-3 gap-8">
         <div class="bg-white p-8 rounded-2xl shadow-card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 reveal delay-100 group">
           <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-delsur-blue transition-colors">
@@ -240,6 +272,7 @@ if (empty($proyectosHome)) {
         </div>
         <a href="proyectos.php" class="hidden md:inline-flex items-center text-delsur-orange font-semibold hover:underline">Ver todos los proyectos &rarr;</a>
       </div>
+
       <div class="grid md:grid-cols-3 gap-8">
         <?php foreach($proyectosHome as $index => $ph): 
             $imgHome = is_array($ph['imagenes']) ? $ph['imagenes'][0] : $ph['imagenes'];
@@ -351,7 +384,7 @@ if (empty($proyectosHome)) {
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 1. PRELOADER (2 segundos)
+    // 1. PRELOADER
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('preloader');
@@ -359,7 +392,7 @@ if (empty($proyectosHome)) {
         }, 2000);
     });
 
-    // 2. EFECTO PARALLAX
+    // 2. EFECTO PARALLAX HERO
     const heroSection = document.getElementById('inicio');
     const heroPattern = document.getElementById('hero-pattern');
     if (heroSection && heroPattern) {
@@ -387,11 +420,13 @@ if (empty($proyectosHome)) {
     const mobileMenu = document.getElementById('mobileMenu');
     mobileBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
 
+    // Animaciones al hacer scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+    // Formulario de Contacto
     const contactForm = document.getElementById('contactForm');
     const formMessage = document.getElementById('formMessage');
     contactForm.addEventListener('submit', async (e) => {
@@ -423,6 +458,7 @@ if (empty($proyectosHome)) {
         }
     });
 
+    // Nav Sticky
     window.addEventListener('scroll', () => {
         const nav = document.getElementById('navbar');
         if (window.scrollY > 50) {
