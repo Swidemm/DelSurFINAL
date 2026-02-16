@@ -1,14 +1,14 @@
 <?php
-// Carga de proyectos para el carrusel/rejilla dinámica
+// index.php - Del Sur Construcciones
 $jsonFile = 'proyectos.json';
 $proyectosTodo = file_exists($jsonFile) ? json_decode(file_get_contents($jsonFile), true) : [];
 
-// Filtramos por la estrella del Admin
+// Filtramos solo los destacados (los que tienen la estrella en el admin)
 $proyectosHome = array_filter($proyectosTodo, function($p) {
     return isset($p['destacado']) && $p['destacado'] === true;
 });
 
-// Fallback: si no hay nada marcado, mostramos los últimos 3
+// Fallback: si no hay ninguno marcado, mostramos los últimos 3 por defecto
 if (empty($proyectosHome)) {
     $proyectosHome = array_slice($proyectosTodo, 0, 3);
 }
@@ -451,22 +451,17 @@ if (empty($proyectosHome)) {
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 1. LÓGICA DE PRELOADER RESILIENTE
-    // Creamos una función única para ocultarlo
-    const hidePreloader = () => {
-        const loader = document.getElementById('preloader');
-        if (loader) {
-            loader.classList.add('opacity-0', 'invisible');
-        }
-    };
+    // 1. PRELOADER ORIGINAL (800ms)
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.classList.add('opacity-0', 'invisible');
+            }
+        }, 800);
+    });
 
-    // Intentamos ocultarlo cuando carguen los recursos (imágenes, video)
-    window.addEventListener('load', hidePreloader);
-
-    // Si pasan 5 segundos y no cargó (ej. video colgado), lo ocultamos igual por seguridad
-    setTimeout(hidePreloader, 5000);
-
-    // 2. EFECTO PARALLAX
+    // 2. EFECTO PARALLAX HERO
     const heroSection = document.getElementById('inicio');
     const heroPattern = document.getElementById('hero-pattern');
     if (heroSection && heroPattern) {
@@ -477,7 +472,7 @@ if (empty($proyectosHome)) {
         });
     }
 
-    // 3. TRANSICIÓN DE PÁGINA
+    // 3. TRANSICIÓN DE PÁGINA (ANIMACIÓN ENTRE LINKS)
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
@@ -490,18 +485,20 @@ if (empty($proyectosHome)) {
         });
     });
 
+    // 4. MENU MOBILE
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileBtn && mobileMenu) {
+    if (mobileBtn) {
         mobileBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
     }
 
+    // 5. ANIMACIONES REVEAL (SCROLL)
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Formulario de Contacto (CORREGIDO)
+    // 6. FORMULARIO DE CONTACTO (FETCH CORREGIDO)
     const contactForm = document.getElementById('contactForm');
     const formMessage = document.getElementById('formMessage');
     if (contactForm) {
@@ -510,13 +507,13 @@ if (empty($proyectosHome)) {
             formMessage.textContent = 'Enviando...';
             formMessage.className = 'text-center text-sm font-medium mt-2 text-slate-500';
             
-            const data = new FormData(contactForm);
+            const formData = new FormData(contactForm);
             const payload = {
-                nombre: data.get('nombre'),
-                email: data.get('email'),
-                telefono: data.get('telefono'),
-                mensaje: data.get('mensaje'),
-                honeypot: data.get('honeypot')
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                telefono: formData.get('telefono'),
+                mensaje: formData.get('mensaje'),
+                honeypot: formData.get('honeypot')
             };
 
             try {
@@ -525,14 +522,11 @@ if (empty($proyectosHome)) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
-                
                 if (res.ok) {
                     formMessage.textContent = '¡Mensaje enviado con éxito!';
                     formMessage.className = 'text-center text-sm font-bold mt-2 text-green-600';
                     contactForm.reset();
-                } else { 
-                    throw new Error('Error en la respuesta del servidor'); 
-                }
+                } else { throw new Error('Error al enviar'); }
             } catch (err) {
                 formMessage.textContent = 'Hubo un error. Por favor escribinos por WhatsApp.';
                 formMessage.className = 'text-center text-sm font-bold mt-2 text-red-500';
@@ -540,16 +534,15 @@ if (empty($proyectosHome)) {
         });
     }
 
+    // 7. NAVBAR STICKY EFFECT
     window.addEventListener('scroll', () => {
         const nav = document.getElementById('navbar');
-        if (nav) {
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-md', 'bg-white/95');
-                nav.classList.remove('bg-white/90');
-            } else {
-                nav.classList.remove('shadow-md', 'bg-white/95');
-                nav.classList.add('bg-white/90');
-            }
+        if (window.scrollY > 50) {
+            nav.classList.add('shadow-md', 'bg-white/95');
+            nav.classList.remove('bg-white/90');
+        } else {
+            nav.classList.remove('shadow-md', 'bg-white/95');
+            nav.classList.add('bg-white/90');
         }
     });
   </script>
